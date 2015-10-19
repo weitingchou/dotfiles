@@ -149,7 +149,7 @@ make && make install
 
 info "Copying vimgdb runtime..."
 mkdir $HOME/.vim
-cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* ~/.vim
+cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* $HOME/.vim
 
 info "Installing neobundle..."
 curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh || fail "Error: fetch neobundle failed"
@@ -158,17 +158,17 @@ bash ./install.sh
 info "Installing powerline..."
 pip install --user powerline-status
 
-info "Installing powerline symbols/fonts..."
-wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-mv PowerlineSymbols.otf ~/.fonts/
-fc-cache -vf ~/.fonts/
-mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
+#info "Installing powerline symbols/fonts..."
+#wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+#wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+#mkdir $HOME/.fonts
+#mv PowerlineSymbols.otf $HOME/.fonts/
+#fc-cache -vf $HOME/.fonts/
+#mv 10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d/
 
 info "Copying dotfiles..."
 cd /tmp/dotfiles
 rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" \
     --exclude "README.md" --exclude "LICENSE-MIT.txt" -avh --no-perms . $HOME;
-source $HOME/.zshrc;
 
 success "installation completed without errors"
