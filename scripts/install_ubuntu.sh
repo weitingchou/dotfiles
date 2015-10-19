@@ -128,8 +128,8 @@ info "Installing oh-my-zsh..."
 bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 info "Copying custom settings to oh-my-zsh..."
-cp ./dotfiles/init/oh-my-zsh/theme/* $HOME/.oh-my-zsh/themes/
-cp ./dotfiles/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
+cp /tmp/dotfiles/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
+cp /tmp/dotfiles/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
 info "Fetching vim source..."
 wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
