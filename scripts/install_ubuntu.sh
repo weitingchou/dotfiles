@@ -76,6 +76,10 @@ version_gte () {
 
 PLATFORM_TYPE=$1
 case "$PLATFORM_TYPE" in
+    "")
+        # Default platform type
+        PLATFORM_TYPE="desktop"
+        ;;
     server|desktop)
         ;;
     *)
