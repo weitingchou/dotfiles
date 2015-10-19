@@ -137,9 +137,7 @@ tar xjvf vim-7.4.tar.bz2 -C /tmp
 rm -f vim-7.4.tar.bz2
 
 info "Fetching vimgdb patch..."
-env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git || fail "Error: git clone of vimgdb patch failed"
-tar xzvf vimgdb-for-vim7.4.tar.gz -C /tmp
-rm -f vimgdb-for-vim7.4.tar.gz
+env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git /tmp/vimgdb-for-vim7.4 || fail "Error: git clone of vimgdb patch failed"
 
 info "Patching vim..."
 cd /tmp
@@ -148,6 +146,10 @@ patch -p0 < vimgdb-for-vim7.4/vim74.patch || fail "Error: patch vim failed"
 info "Building patched vim..."
 cd vim74/src
 make && make install
+
+info "Copying vimgdb runtime..."
+mkdir $HOME/.vim
+cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* ~/.vim
 
 info "Installing neobundle..."
 curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh || fail "Error: fetch neobundle failed"
