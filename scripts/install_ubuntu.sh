@@ -74,6 +74,15 @@ version_gte () {
     return 0
 }
 
+PLATFORM_TYPE=$1
+case "$PLATFORM_TYPE" in
+    server|desktop)
+        ;;
+    *)
+        fail "Unknown parameter: $1"
+        ;;
+esac
+
 # Before we start, make sure user really wants to do this
 read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
 echo ''
@@ -95,6 +104,7 @@ sudo apt-get install -y cscope
 sudo apt-get install -y g++
 sudo apt-get install -y tree
 sudo apt-get install -y silversearcher-ag # Need Ubuntu 13.10 or more
+sudo apt-get install -y autojump
 
 sudo apt-get install -y nodejs
 sudo apt-get install -y golang
@@ -113,7 +123,7 @@ info "${BLUE}Cloning dotfiles...${NORMAL}\n"
 hash git >/dev/null 2>&1 || fails "Error: git clone of dotfiles repo failed"
 env git clone --depth=1 https://github.com/weitingchou/dotfiles.git /tmp/dotfiles || fail "Error: git clone of dotfiles repo failed"
 
-info "Checking zsh installation..."
+info "${BLUE}Checking zsh installation..."
 if [ ! $(grep /zsh$ /etc/shells | wc -l) -ge 1  ]; then
     fail "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!"
 fi
@@ -121,52 +131,54 @@ ZSH_VERSION="$(zsh --version | cut -d' ' -f 2)"
 version_gte "$ZSH_VERSION" "4.3.9" || fail "zsh version should be v4.3.9 or more (current: $ZSH_VERSION)"
 unset ZSH_VERSION
 
-info "Making default shell to zsh..."
+info "${BLUE}Making default shell to zsh..."
 chsh -s $(which zsh)
 
-info "Installing oh-my-zsh..."
+info "${BLUE}Installing oh-my-zsh..."
 bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-info "Copying custom settings to oh-my-zsh..."
+info "${BLUE}Copying custom settings to oh-my-zsh..."
 cp /tmp/dotfiles/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
 cp /tmp/dotfiles/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
-info "Fetching vim source..."
+info "${BLUE}Fetching vim source..."
 wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
 tar xjvf vim-7.4.tar.bz2 -C /tmp
 rm -f vim-7.4.tar.bz2
 
-info "Fetching vimgdb patch..."
+info "${BLUE}Fetching vimgdb patch..."
 env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git /tmp/vimgdb-for-vim7.4 || fail "Error: git clone of vimgdb patch failed"
 
-info "Patching vim..."
+info "${BLUE}Patching vim..."
 cd /tmp
 patch -p0 < vimgdb-for-vim7.4/vim74.patch || fail "Error: patch vim failed"
 
-info "Building patched vim..."
+info "${BLUE}Building patched vim..."
 cd vim74/src
 make && make install
 
-info "Copying vimgdb runtime..."
+info "${BLUE}Copying vimgdb runtime..."
 mkdir $HOME/.vim
 cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* $HOME/.vim
 
-info "Installing neobundle..."
+info "${BLUE}Installing neobundle..."
 curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh || fail "Error: fetch neobundle failed"
 bash ./install.sh
 
-info "Installing powerline..."
+info "${BLUE}Installing powerline..."
 pip install --user powerline-status
 
-#info "Installing powerline symbols/fonts..."
-#wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-#wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-#mkdir $HOME/.fonts
-#mv PowerlineSymbols.otf $HOME/.fonts/
-#fc-cache -vf $HOME/.fonts/
-#mv 10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d/
+if [[ "$PLATFORM_TYPE" == "desktop" ]]; then
+    info "${BLUE}Installing powerline symbols/fonts..."
+    wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+    wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+    mkdir $HOME/.fonts
+    mv PowerlineSymbols.otf $HOME/.fonts/
+    fc-cache -vf $HOME/.fonts/
+    mv 10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d/
+fi
 
-info "Copying dotfiles..."
+info "${BLUE}Copying dotfiles..."
 cd /tmp/dotfiles
 rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" \
     --exclude "README.md" --exclude "LICENSE-MIT.txt" -avh --no-perms . $HOME;
