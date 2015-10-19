@@ -43,7 +43,7 @@ fail () {
     exit
 }
 
-vercomp () {
+version_gte () {
     if [[ $1 == $2  ]]
     then
         return 0
@@ -64,11 +64,11 @@ vercomp () {
         fi
         if ((10#${ver1[i]} > 10#${ver2[i]}))
         then
-            return 1
+            return 0
         fi
         if ((10#${ver1[i]} < 10#${ver2[i]}))
         then
-            return 2
+            return 1
         fi
     done
     return 0
@@ -84,6 +84,7 @@ fi
 info "Installing basic packages..."
 sudo apt-get update
 sudo apt-get install -y git
+sudo apt-get install -y language-pack-en
 sudo apt-get install -y build-essential
 sudo apt-get install -y curl
 sudo apt-get install -y wget
@@ -117,10 +118,7 @@ if [ ! $(grep /zsh$ /etc/shells | wc -l) -ge 1  ]; then
     fail "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!"
 fi
 ZSH_VERSION="$(zsh --version | cut -d' ' -f 2)"
-vercomp "$ZSH_VERSION" "4.3.9"
-if [[ $? == "2" ]]; then
-    fail "zsh version should be v4.3.9 or more (current: $ZSH_VERSION)"
-fi
+version_gte "$ZSH_VERSION" "4.3.9" || fail "zsh version should be v4.3.9 or more (current: $ZSH_VERSION)"
 unset ZSH_VERSION
 
 info "Making default shell to zsh..."

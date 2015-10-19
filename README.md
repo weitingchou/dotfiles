@@ -31,7 +31,7 @@ set -- -f; source bootstrap.sh
 To install these dotfiles without Git:
 
 ```bash
-cd; curl -#L https://github.com/mathiasbynens/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,bootstrap.sh,LICENSE-MIT.txt}
+bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_ubuntu.sh)"
 ```
 
 To update later on, just run that command again.
