@@ -110,6 +110,18 @@ info "${BLUE}Installing Node.js environment...${NORMAL}\n"
 env git clone https://github.com/creationix/nvm.git $HOME/.nvm && cd $HOME/.nvm && git checkout `git describe --abbrev=0 --tags`
 . $HOME/.nvm/nvm.sh
 nvm install stable
+case "$OS" in
+    ubuntu)
+        sudo apt-get install -y npm
+        ;;
+    centos)
+        sudo yum install -y npm
+        ;;
+    osx)
+        brew install npm
+        ;;
+esac
+npm install -g grunt-cli
 
 info "${BLUE}Cloning dotfiles...${NORMAL}\n"
 hash git >/dev/null 2>&1 || fails "Error: git clone of dotfiles repo failed"

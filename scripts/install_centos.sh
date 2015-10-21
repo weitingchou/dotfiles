@@ -35,8 +35,6 @@ sudo yum install -y ncurses ncurses-devel python-devel
 
 sudo yum install -y golang
 
-sudo yum install -y npm
-
 sudo yum install -y python2.7
 sudo yum install -y python3.4
 sudo yum install -y python-pip
