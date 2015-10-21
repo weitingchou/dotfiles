@@ -113,15 +113,20 @@ nvm install stable
 case "$OS" in
     ubuntu)
         sudo apt-get install -y npm
+        SUDO="sudo"
         ;;
     centos)
         sudo yum install -y npm
+        SUDO="sudo"
         ;;
     osx)
         brew install npm
+        SUDO=""
         ;;
 esac
-npm install -g grunt-cli
+${SUDO} npm install -g grunt-cli
+${SUDO} npm install -g sails
+${SUDO} npm install -g yo
 
 info "${BLUE}Cloning dotfiles...${NORMAL}\n"
 hash git >/dev/null 2>&1 || fails "Error: git clone of dotfiles repo failed"
