@@ -25,6 +25,9 @@ sudo apt-get install -y silversearcher-ag # Need Ubuntu 13.10 or more
 sudo apt-get install -y autojump
 
 sudo apt-get install -y golang
+
+sudo apt-get install -y npm
+
 sudo apt-get install -y python2.7
 sudo apt-get install -y python3.4
 sudo apt-get install -y python-pip
