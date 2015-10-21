@@ -106,21 +106,20 @@ hash git >/dev/null 2>&1 || fails "Error: git clone of dotfiles repo failed"
 env git clone --depth=1 https://github.com/weitingchou/dotfiles.git /tmp/dotfiles || fail "Error: git clone of dotfiles repo failed"
 
 info "${BLUE}Checking zsh installation..."
-if [ ! $(grep /zsh$ /etc/shells | wc -l) -ge 1  ]; then
-    fail "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!"
-fi
-ZSH_VERSION="$(zsh --version | cut -d' ' -f 2)"
-version_gte "$ZSH_VERSION" "4.3.9" || fail "zsh version should be v4.3.9 or more (current: $ZSH_VERSION)"
-unset ZSH_VERSION
+command -v zsh > /dev/null 2>&1 || fail "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!"
+version_gte "$(zsh --version | cut -d' ' -f 2)" "4.3.9" || fail "zsh version should be v4.3.9 or more"
 
 info "${BLUE}Making default shell to zsh...${NORMAL}"
+if [ ! $(grep "$(which zsh)" /etc/shells | wc -l) -ge 1 ]; then
+    echo "$(which zsh)" | sudo tee -a /etc/shells
+fi
 chsh -s $(which zsh)
 
 info "${BLUE}Installing oh-my-zsh...${NORMAL}"
 #bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 # XXX: We don't want to start zsh right after finished the oh-my-zsh installation, since we still have works to do,
 #      remove the 'env zsh' at the end of installation script
-bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh) | sed -e 's/env zsh//g')"
+bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed -e 's/env zsh//g')"
 
 info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp /tmp/dotfiles/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
