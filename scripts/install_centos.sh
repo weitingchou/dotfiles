@@ -11,6 +11,7 @@ printf "\r  [ \033[00;34m..\033[0m ] Installing basic packages...\n""] ]"
 
 info "Installing basic packages..."
 sudo yum -y update
+sudo yum install -y epel-release
 sudo yum groupinstall -y "Development Tools"
 sudo yum install -y git
 sudo yum install -y language-pack-en
@@ -26,6 +27,7 @@ sudo yum install -y silversearcher-ag # Need Ubuntu 13.10 or more
 sudo yum install -y autojump
 
 sudo yum install -y golang
+
 sudo yum install -y python2.7
 sudo yum install -y python3.4
 sudo yum install -y python-pip
