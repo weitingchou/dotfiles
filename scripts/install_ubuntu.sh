@@ -29,4 +29,4 @@ sudo apt-get install -y python2.7
 sudo apt-get install -y python3.4
 sudo apt-get install -y python-pip
 
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dev.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dev.sh)" "ubuntu"

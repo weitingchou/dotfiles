@@ -74,6 +74,16 @@ version_gte () {
     return 0
 }
 
+# Get the OS type
+case "$0" in
+    ubuntu|centos|oxs)
+        OS=$0
+        ;;
+    *)
+        fail "Unknown parameter: $0, should be one of ubuntu/centos/oxs"
+        ;;
+esac
+
 read -p "Please select the platform type you are installing: server/desktop (default: server)"
 echo ''
 case "$REPLY" in
@@ -125,25 +135,28 @@ info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp /tmp/dotfiles/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
 cp /tmp/dotfiles/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
-info "${BLUE}Fetching vim source...${NORMAL}"
-wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
-tar xjvf vim-7.4.tar.bz2 -C /tmp
-rm -f vim-7.4.tar.bz2
+# XXX: Have problem with building vim from source code on CentOS, we will use yum's vim for new...
+if [[ "$OS" != "centos" ]]; then
+    info "${BLUE}Fetching vim source...${NORMAL}"
+    wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
+    tar xjvf vim-7.4.tar.bz2 -C /tmp
+    rm -f vim-7.4.tar.bz2
 
-info "${BLUE}Fetching vimgdb patch...${NORMAL}"
-env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git /tmp/vimgdb-for-vim7.4 || fail "Error: git clone of vimgdb patch failed"
+    info "${BLUE}Fetching vimgdb patch...${NORMAL}"
+    env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git /tmp/vimgdb-for-vim7.4 || fail "Error: git clone of vimgdb patch failed"
 
-info "${BLUE}Patching vim...${NORMAL}"
-cd /tmp
-patch -p0 < vimgdb-for-vim7.4/vim74.patch || fail "Error: patch vim failed"
+    info "${BLUE}Patching vim...${NORMAL}"
+    cd /tmp
+    patch -p0 < vimgdb-for-vim7.4/vim74.patch || fail "Error: patch vim failed"
 
-info "${BLUE}Building patched vim...${NORMAL}"
-cd vim74/src
-make && make install
+    info "${BLUE}Building patched vim...${NORMAL}"
+    cd vim74/src
+    make && make install || fail "Error: build vim failed"
 
-info "${BLUE}Copying vimgdb runtime...${NORMAL}"
-mkdir $HOME/.vim
-cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* $HOME/.vim
+    info "${BLUE}Copying vimgdb runtime...${NORMAL}"
+    mkdir $HOME/.vim
+    cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* $HOME/.vim
+fi
 
 info "${BLUE}Installing neobundle...${NORMAL}"
 curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh || fail "Error: fetch neobundle failed"

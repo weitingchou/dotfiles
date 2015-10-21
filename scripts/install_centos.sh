@@ -26,10 +26,17 @@ sudo yum install -y tree
 sudo yum install -y silversearcher-ag # Need Ubuntu 13.10 or more
 sudo yum install -y autojump
 
+sudo yum install -y vim-minimal
+sudo yum install -y vim-common
+sudo yum install -y vim-enhanced
+
+# for building vim
+sudo yum install -y ncurses ncurses-devel python-devel
+
 sudo yum install -y golang
 
 sudo yum install -y python2.7
 sudo yum install -y python3.4
 sudo yum install -y python-pip
 
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dev.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dev.sh)" "centos"
