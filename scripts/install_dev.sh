@@ -97,7 +97,8 @@ esac
 umask g-w,o-w
 
 info "${BLUE}Installing Node.js environment...${NORMAL}\n"
-env git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
+env git clone https://github.com/creationix/nvm.git $HOME/.nvm && cd $HOME/.nvm && git checkout `git describe --abbrev=0 --tags`
+. $HOME/.nvm/nvm.sh
 nvm install stable
 
 info "${BLUE}Cloning dotfiles...${NORMAL}\n"
