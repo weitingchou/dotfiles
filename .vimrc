@@ -57,7 +57,7 @@
             return
         endif
 
-        if number_of_windows_to_this_buffer > 1 
+        if number_of_windows_to_this_buffer > 1
             wincmd c
         else
             bdelete
@@ -69,7 +69,7 @@
     set timeoutlen=300          "mapping timeout
     set ttimeoutlen=50          "keycode timeout
 
-    "set fileencodings=utf-8,big5,euc-jp,gbk,euc-kr,utf-bom,iso8859-1 
+    "set fileencodings=utf-8,big5,euc-jp,gbk,euc-kr,utf-bom,iso8859-1
     set encoding=utf-8          "set encoding for text
     set history=10000
     set ttyfast                 "assume fast terminal connection
@@ -270,6 +270,17 @@
     NeoBundle 'leshill/vim-json', {'autoload':{'filetypes':['javascript','json']}}
     NeoBundle 'othree/javascript-libraries-syntax.vim', {'autoload':{'filetypes':['javascript','coffee','ls','typescript']}}
 
+    " HTML & CSS
+    NeoBundle 'mattn/emmet-vim' "{{{
+        "let g:user_emmet_mode='n'              "only enable normal mode functions.
+        "let g:user_emmet_mode='inv'            "enable all functions, which is equal to
+        "let g:user_emmet_mode='a'              "enable all function in all mode
+        "let g:user_emmet_install_global = 0    "enable just for html/css
+        "autocmd FileType html,css EmmetInstall
+        "let g:user_emmet_leader_key='<C-Z>'    "remap the default <C-Y> leader NOTE: ',' still needs to be entered,
+                                                "so the new keymap would be <C-Z>,
+    "}}}
+
     " Ruby
     NeoBundle 'tpope/vim-rails'
     NeoBundle 'tpope/vim-bundler'
@@ -307,7 +318,7 @@
         "e: find this egrep pattern
         "f: find this file
         "i: find files #include this file
-        nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR> 
+        nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
         nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
         nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
         nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
@@ -515,8 +526,8 @@
                 hi IndentGuidesEven ctermbg=236
             endfunction
             autocmd VimEnter,Colorscheme * call s:indent_set_console_colors()
-        endif 
-    "}}}  
+        endif
+    "}}}
 
     " misc
     if exists('%TMUX')
@@ -534,15 +545,15 @@
     NeoBundle 'bufkill.vim'
     NeoBundle 'mhinz/vim-startify' "{{{
         let g:startify_session_dir = s:get_cache_dir('sessions')
-        let g:startify_change_to_vcs_root = 1 
-        let g:startify_show_sessions = 1 
+        let g:startify_change_to_vcs_root = 1
+        let g:startify_show_sessions = 1
         nnoremap <F1> :Startify<cr>
     "}}}
     NeoBundle 'scrooloose/syntastic' "{{{
-        let g:syntastic_error_symbol = '✗' 
-        let g:syntastic_style_error_symbol = '✠' 
-        let g:syntastic_warning_symbol = '∆' 
-        let g:syntastic_style_warning_symbol = '≈' 
+        let g:syntastic_error_symbol = '✗'
+        let g:syntastic_style_error_symbol = '✠'
+        let g:syntastic_warning_symbol = '∆'
+        let g:syntastic_style_warning_symbol = '≈'
     "}}}
 
     nnoremap <leader>nbu :Unite neobundle/update -vertical -no-start-insert<cr>
