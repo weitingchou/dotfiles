@@ -76,11 +76,11 @@ version_gte () {
 
 # Get the OS type
 case "$0" in
-    ubuntu|centos|oxs)
+    ubuntu|centos|osx)
         OS=$0
         ;;
     *)
-        fail "Unknown parameter: $0, should be one of ubuntu/centos/oxs"
+        fail "Unknown parameter: $0, should be one of ubuntu/centos/osx"
         ;;
 esac
 
