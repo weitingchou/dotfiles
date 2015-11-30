@@ -23,8 +23,8 @@ sudo yum install -y ctags
 sudo yum install -y cscope
 sudo yum install -y g++
 sudo yum install -y tree
-sudo yum install -y silversearcher-ag # Need Ubuntu 13.10 or more
-sudo yum install -y autojump
+sudo yum install -y the_silver_searcher
+sudo yum install -y autojump-zsh
 
 sudo yum install -y vim-minimal
 sudo yum install -y vim-common
