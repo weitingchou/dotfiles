@@ -63,7 +63,7 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # This will fix an OSX ValueError of unknown locale: UTF-8 in Python
 # see https://coderwall.com/p/-k_93g/mac-os-x-valueerror-unknown-locale-utf-8-in-python
-#export LC_ALL=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
