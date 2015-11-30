@@ -1,6 +1,6 @@
 # Wei-Ting’s dotfiles
 
-This project is a fork of [Mathias Bynens](https://github.com/mathiasbynens/)'s excellent [dotfiles](https://github.com/mathiasbynens/) and modified with my style. 
+This project is a fork of [Mathias Bynens](https://github.com/mathiasbynens/)'s excellent [dotfiles](https://github.com/mathiasbynens/) and modified with my style.
 
 ![Screenshot of my shell prompt](http://i.imgur.com/EkEtphC.png)
 
@@ -95,4 +95,5 @@ Suggestions/improvements
 
 ## Thanks to…
 
-* [mathias bynens](https://github.com/mathiasbynens/dotfiles)
+* [Mathias Bynens](https://github.com/mathiasbynens/dotfiles.git)
+* [Zach Holman](https://github.com/holman/dotfiles.git)
