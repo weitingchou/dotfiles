@@ -9,11 +9,14 @@ for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
 done
 
 # Detect which `ls` flavor is in use
-if ls --color > /dev/null 2>&1; then # GNU `ls`
-    colorflag="--color"
-else # OS X `ls`
-    colorflag="-G"
-fi
+#if ls --color > /dev/null 2>&1; then # GNU `ls`
+#    colorflag="--color"
+#else # OS X `ls`
+#    colorflag="-G"
+#fi
+# Always use GNU `ls`
+# To use GNU `ls` on OS X, run 'brew install coreutils'
+alias ls="ls --color"
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
