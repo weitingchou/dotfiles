@@ -152,8 +152,8 @@ info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp /tmp/dotfiles/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
 cp /tmp/dotfiles/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
-# XXX: Have problem with building vim from source code on CentOS, we will use yum's vim for new...
-if [[ "$OS" != "centos" ]]; then
+# XXX: Have problem with building vim from source code on CentOS and OS X
+if [[ "$OS" == "ubuntu" ]]; then
     info "${BLUE}Fetching vim source...${NORMAL}"
     wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
     tar xjvf vim-7.4.tar.bz2 -C /tmp
