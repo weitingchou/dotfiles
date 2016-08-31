@@ -1,3 +1,5 @@
+OSTYPE=`uname`
+
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..2='cd ../..'
 alias ..3='cd ../../..'
@@ -9,14 +11,13 @@ for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
 done
 
 # Detect which `ls` flavor is in use
-#if ls --color > /dev/null 2>&1; then # GNU `ls`
-#    colorflag="--color"
-#else # OS X `ls`
-#    colorflag="-G"
-#fi
-# Always use GNU `ls`
-# To use GNU `ls` on OS X, run 'brew install coreutils'
-alias ls="ls --color"
+# For `ls` color setting go check theme/richchou.theme
+if ls --color > /dev/null 2>&1; then # GNU `ls`
+    colorflag="--color"
+else # OS X `ls`
+    colorflag="-G"
+fi
+alias ls="ls ${colorflag}"
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
@@ -57,5 +58,11 @@ command -v grunt > /dev/null && alias grunt="grunt --stack"
 #alias stfu="osascript -e 'set volume output muted true'"
 #alias pumpitup="osascript -e 'set volume 7'"
 
+if [ $OSTYPE = "Darwin" ]; then
+    alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+fi
+
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec $SHELL -l"
+
+unset OSTYPE
