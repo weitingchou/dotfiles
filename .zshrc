@@ -53,10 +53,16 @@ plugins=(git git-flow common-aliases autojump npm python tmux)
 
 # User configuration
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$HOME/library/python/2.7/bin"
-#export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
+# Load the shell dotfiles, and then some:
+# * ~/.path can be used to extend `$PATH`.
+# * ~/.extra can be used for other settings you don't want to commit.
+for file in ~/.{path,extra}; do
+    [ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
+unset file;
 
 source $ZSH/oh-my-zsh.sh
 
@@ -93,18 +99,3 @@ export EDITOR='vim'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
 
-# Use GNU core utilities instead of those come with OS X
-#
-# The Homebrew coreutils formula installs the tools with g appended to their names -
-# e.g. gcat instead of cat, etc. This is a workaround in order to use GNU version of tools
-# i.e. without prefix 'g'.
-#
-# NOTE: Using gnubin will cause Homebrew warning:
-#       "Putting non-prefixed coreutils in your path can cause gmp builds to fail."
-#       However, I will leave it there since it haven't caused me any problem so far.
-#
-# Reference
-# - http://apple.stackexchange.com/questions/69223/how-to-replace-mac-os-x-utilities-with-gnu-core-utilities
-# - https://github.com/Homebrew/legacy-homebrew/issues/19238
-COREUTILS="$(brew --prefix coreutils)/libexec/gnubin"
-export PATH="$COREUTILS:$PATH"
