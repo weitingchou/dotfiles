@@ -69,16 +69,11 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # This will fix an OSX ValueError of unknown locale: UTF-8 in Python
 # see https://coderwall.com/p/-k_93g/mac-os-x-valueerror-unknown-locale-utf-8-in-python
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+export LC_ALL='en_US.UTF-8'
+export LANG='en_US.UTF-8'
 
 # Preferred editor for local and remote sessions
 export EDITOR='vim'
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -95,7 +90,17 @@ export EDITOR='vim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Omit duplicates and commands that begin with a space from history.
+export HISTCONTROL='ignoreboth';
+
+#Highlight section titles in manual pages.
+export LESS_TERMCAP_md="${yellow}"
+
+# Don't clear the screen after quitting a manual page.
+export MANPAGER='less -X'
+
 # Load NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
+
 
