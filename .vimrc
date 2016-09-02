@@ -736,6 +736,23 @@
         let g:solarized_termtrans=1
         highlight SignColumn guibg=#002b36
     "}}}
+    NeoBundle 'vim-airline/vim-airline-themes' "{{{
+        if has('gui_running')
+            set background=light
+
+            " I like the lower contrast for list characters.  But in a terminal
+            " this makes them completely invisible and causes the cursor to
+            " disappear.
+            let g:solarized_visibility="low"    "Specifies contrast of invisibles.
+        else
+            set background=dark
+        endif
+        if $TERM == 'screen'
+            let g:solarized_termcolors=256      "tell Solarized to use the 256 degraded color mode
+        endif
+        let g:solarized_termtrans=1
+        highlight SignColumn guibg=#002b36
+    "}}}
     NeoBundle 'nanotech/jellybeans.vim'
     NeoBundle 'tomasr/molokai'
     NeoBundle 'chriskempson/vim-tomorrow-theme'
