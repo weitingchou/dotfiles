@@ -147,12 +147,15 @@ rsync --exclude ".git/" \
 # TODO: Have problem with building vim from source code on MacOS
 if [[ "$OSTYPE" == "ubuntu" ]]; then
   info "${BLUE}Fetching vim source...${NORMAL}"
+  if [ -d "/tmp/vim74" ]; then
+    rm -rf /tmp/vim74
+  fi
   wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
   tar xjvf vim-7.4.tar.bz2 -C /tmp
   rm -f vim-7.4.tar.bz2
 
   info "${BLUE}Fetching vimgdb patch...${NORMAL}"
-  if [ -d "/tmp/vimgdb-for-vim7.4" ]; then # Delete the vimgdb patch folder if exists
+  if [ -d "/tmp/vimgdb-for-vim7.4" ]; then
     rm -rf /tmp/vimgdb-for-vim7.4
   fi
   env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git /tmp/vimgdb-for-vim7.4 || fail "Error: git clone of vimgdb patch failed"
@@ -198,6 +201,9 @@ info "${BLUE}Installing nodejs environment...${NORMAL}"
 # Install nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
 # Load nvm
+if [[ ! "$NVM_DIR" == "" ]]; then
+  rm -rf $NVM_DIR
+fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
 # Install nodejs (long-term support version)
