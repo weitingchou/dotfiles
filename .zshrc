@@ -49,7 +49,7 @@ ZSH_THEME="richchou"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-flow common-aliases autojump npm python tmux)
+plugins=(git git-flow common-aliases autojump node nvm npm python tmux)
 
 # User configuration
 
