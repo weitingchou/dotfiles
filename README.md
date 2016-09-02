@@ -2,7 +2,7 @@
 
 This project is a fork of [Mathias Bynens](https://github.com/mathiasbynens/)'s excellent [dotfiles](https://github.com/mathiasbynens/) and modified with my style.
 
-![Screenshot of my shell prompt](http://i.imgur.com/EkEtphC.png)
+![Screenshot of my shell prompt](http://i.imgur.com/QOq7dNH.png)
 
 ## Installation
 
@@ -13,7 +13,7 @@ This project is a fork of [Mathias Bynens](https://github.com/mathiasbynens/)'s 
 You can clone the repository wherever you want. (I like to keep it in `~/Projects/dotfiles`, with `~/dotfiles` as a symlink.) The bootstrapper script will pull in the latest version and copy the files to your home folder.
 
 ```bash
-git clone https://github.com/mathiasbynens/dotfiles.git && cd dotfiles && source bootstrap.sh
+bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/bootstrap.sh)"
 ```
 
 To update, `cd` into your local `dotfiles` repository and then:
@@ -23,22 +23,6 @@ source bootstrap.sh
 ```
 
 Alternatively, to update while avoiding the confirmation prompt:
-
-```bash
-set -- -f; source bootstrap.sh
-```
-
-### Git-free install
-
-To install these dotfiles without Git:
-
-#### Ubuntu
-
-```bash
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_ubuntu.sh)"
-```
-
-To update later on, just run that command again.
 
 ### Specify the `$PATH`
 
@@ -74,7 +58,7 @@ You could also use `~/.extra` to override settings, functions and aliases from m
 When setting up a new Mac, you may want to set some sensible OS X defaults:
 
 ```bash
-./.osx
+./.macos
 ```
 
 ### Install Homebrew formulae
