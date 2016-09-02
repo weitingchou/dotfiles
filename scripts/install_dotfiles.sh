@@ -198,12 +198,12 @@ if [[ "$PLATFORM_TYPE" == "desktop" ]]; then
 fi
 
 info "${BLUE}Installing nodejs environment...${NORMAL}"
-# Install nvm
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
-# Load nvm
 if [[ ! "$NVM_DIR" == "" ]]; then
   rm -rf $NVM_DIR
 fi
+# Install nvm
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh)"
+# Load nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
 # Install nodejs (long-term support version)
