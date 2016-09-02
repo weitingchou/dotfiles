@@ -37,6 +37,5 @@ sudo apt-get install -y python2.7
 sudo apt-get install -y python3.4
 sudo apt-get install -y python-pip
 pip install --upgrade pip   # upgrade pip
-sudo apt-get install -y npm # for neobundle ['tern_for_vim'] use
 
 bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"
