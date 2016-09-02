@@ -194,18 +194,14 @@ if [[ "$PLATFORM_TYPE" == "desktop" ]]; then
   mv 10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d/
 fi
 
-read -p "Do you want to install development packages: yes/no (default: no) "
-echo ''
-case "$REPLY" in
-  ""|no)
-    success "installation completed without errors"
-    env zsh
-    ;;
-  yes)
-    cd $REPODIR
-    bash ./scripts/install_dev.sh "$OSTYPE"
-    ;;
-  *)
-    fail "Unknown parameter: $REPLY"
-    ;;
-esac
+info "${BLUE}Installing nodejs environment...${NORMAL}"
+# Install nvm
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash
+# Load nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
+# Install nodejs (long-term support version)
+nvm install --lts
+
+success "installation completed without errors"
+env zsh
