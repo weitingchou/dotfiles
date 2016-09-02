@@ -111,19 +111,6 @@ fi
 hash git >/dev/null 2>&1 || fails "Error: git clone of dotfiles repo failed"
 env git clone --depth=1 https://github.com/weitingchou/dotfiles.git $REPODIR || fail "Error: git clone of dotfiles repo failed"
 
-info "${BLUE}Copying dotfiles...${NORMAL}"
-cd $REPODIR
-rsync --exclude ".git/" \
-  --exclude ".DS_Store" \
-  --exclude ".macos" \
-  --exclude "bin/" \
-  --exclude "init/" \
-  --exclude "scripts/" \
-  --exclude "bootstrap.sh" \
-  --exclude "README.md" \
-  --exclude "LICENSE-MIT.txt" \
-  -avh --no-perms . $HOME;
-
 info "${BLUE}Checking zsh installation..."
 command -v zsh > /dev/null 2>&1 || fail "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!"
 version_gte "$(zsh --version | cut -d' ' -f 2)" "4.3.9" || fail "zsh version should be v4.3.9 or more"
@@ -143,6 +130,19 @@ bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools
 info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp $REPODIR/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
 cp $REPODIR/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
+
+info "${BLUE}Copying dotfiles...${NORMAL}"
+cd $REPODIR
+rsync --exclude ".git/" \
+  --exclude ".DS_Store" \
+  --exclude ".macos" \
+  --exclude "bin/" \
+  --exclude "init/" \
+  --exclude "scripts/" \
+  --exclude "bootstrap.sh" \
+  --exclude "README.md" \
+  --exclude "LICENSE-MIT.txt" \
+  -avh --no-perms . $HOME;
 
 # TODO: Have problem with building vim from source code on MacOS
 if [[ "$OSTYPE" == "ubuntu" ]]; then
