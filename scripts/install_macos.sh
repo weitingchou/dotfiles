@@ -63,10 +63,11 @@ brew install tree
 brew install ctags
 brew install cscope
 
-# Install Python for later installation use
+# Install packages for later installation use
 brew install python       # pyhton 2.7, will also install pip
 brew install python3
 pip install --upgrade pip # upgrade pip
+brew install npm          # for neobundle ['tern_for_vim'] use
 
 # Install font tools.
 brew tap bramstein/webfonttools
