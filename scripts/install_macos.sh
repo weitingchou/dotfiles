@@ -65,8 +65,9 @@ brew install cscope
 
 # Install packages for later installation use
 brew install python       # pyhton 2.7, will also install pip
-brew install python3
-pip install --upgrade pip # upgrade pip
+pip install --upgrade pip setuptools
+brew install python3      # will install pip3
+pip3 install --upgrade pip setuptools wheel
 
 # Install font tools.
 brew tap bramstein/webfonttools
