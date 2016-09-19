@@ -50,7 +50,7 @@ ZSH_THEME="richchou"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 # Go check https://github.com/unixorn/awesome-zsh-plugins for some awesome zsh plugins!
-plugins=(git git-flow common-aliases autojump node nvm npm python tmux)
+plugins=(git git-flow common-aliases autojump node nvm npm python tmux docker)
 
 # User configuration
 
