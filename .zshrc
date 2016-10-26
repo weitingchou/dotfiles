@@ -94,7 +94,7 @@ export EDITOR='vim'
 # Omit duplicates and commands that begin with a space from history.
 export HISTCONTROL='ignoreboth';
 
-#Highlight section titles in manual pages.
+# Highlight section titles in manual pages.
 export LESS_TERMCAP_md="${yellow}"
 
 # Don't clear the screen after quitting a manual page.
@@ -104,4 +104,5 @@ export MANPAGER='less -X'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
 
-
+# Export GOPATH
+export GOPATH="$HOME/Workspace/golang"
