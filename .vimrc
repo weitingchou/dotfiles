@@ -288,6 +288,7 @@
     " Python
     NeoBundle 'klen/python-mode', {'autoload':{'filetypes':['python']}} "{{{
         let g:pymode_rope=0
+        let g:pymode_lint_ignore = 'E111,E114'  "disable indent checking
     "}}}
     NeoBundle 'davidhalter/jedi-vim', {'autoload':{'filetypes':['python']}} "{{{
         let g:jedi#popup_on_dot=0
