@@ -1,6 +1,3 @@
-# Compiled Python files
-*.pyc
-
 # Folder view configuration files
 .DS_Store
 Desktop.ini
@@ -12,3 +9,50 @@ Thumbs.db
 # Files that might appear on external disks
 .Spotlight-V100
 .Trashes
+
+# Compiled object files
+*.slo
+*.lo
+*.o
+*.obj
+*.ko
+*.elf
+
+# Compiled dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# CMake generated files
+CMakeCache.txt
+CMakeCache.txt.*
+CMakeFiles
+cmake_install.cmake
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.$py.class
+
+# Fortran module files
+*.mod
+
+# Unit test / coverage reports
+htmlcov/
+*.coverage
+*.coverage.*
