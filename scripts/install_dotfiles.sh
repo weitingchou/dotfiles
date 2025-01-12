@@ -125,7 +125,8 @@ info "${BLUE}Installing oh-my-zsh...${NORMAL}"
 # XXX: We don't want to start zsh right after finished the oh-my-zsh installation since we still have works
 #      to do, so remove the 'env zsh' at the end of installation script
 #bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed -e 's/env zsh//g')"
+#bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed -e 's/env zsh//g')"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp $REPODIR/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/

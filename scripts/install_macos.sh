@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Install Homebrew
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Make sure we're using latest Homebrew.
 brew update
 
 # Upgrade any already-installed formula.
-brew upgrade --all
+brew upgrade
 
-# Install Homebrew Cask
-brew install caskroom/cask/brew-cask
+# Cleanup out-dated formula.
+brew cleanup
 
 # Install iTerm2
-brew cask install iterm2
+brew install --cask iterm2
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don't forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.

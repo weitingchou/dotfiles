@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Before we start, make sure user really wants to do this
 read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
 echo ''

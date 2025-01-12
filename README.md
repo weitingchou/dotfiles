@@ -81,3 +81,5 @@ Suggestions/improvements
 
 * [Mathias Bynens](https://github.com/mathiasbynens/dotfiles.git)
 * [Zach Holman](https://github.com/holman/dotfiles.git)
+* [Kevin Smets](https://gist.github.com/kevin-smets/8568070)
+
