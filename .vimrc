@@ -9,9 +9,13 @@ if !isdirectory(s:cache_dir)
 endif
 
 " 2. Modern Plugin Management (Using vim-plug)
-" Install vim-plug if not present: 
-" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-call plug#begin('~/.vim/plugged')
+" For Vim:    curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" For Neovim: curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if has('nvim')
+    call plug#begin('~/.local/share/nvim/plugged')
+else
+    call plug#begin('~/.vim/plugged')
+endif
 
 " Essentials
 Plug 'tpope/vim-sensible'
@@ -21,10 +25,22 @@ Plug 'scrooloose/nerdtree'
 Plug 'ctrlpvim/ctrlp.vim'
 
 " Language Support
-Plug 'klen/python-mode', { 'for': 'python' }
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+" Vim-only Python plugins (neovim uses LSP instead)
+if !has('nvim')
+    Plug 'klen/python-mode', { 'for': 'python' }
+    Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+endif
 Plug 'pangloss/vim-javascript'
 Plug 'elzr/vim-json'
+
+" Neovim-only: Python LSP + completion (nvim 0.11+ native LSP, no lspconfig needed)
+if has('nvim')
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'L3MON4D3/LuaSnip'
+    Plug 'saadparwaiz1/cmp_luasnip'
+endif
 
 " UI / Colorschemes
 Plug 'altercation/vim-colors-solarized'
@@ -93,6 +109,69 @@ nnoremap <C-l> <C-w>l
 autocmd FileType python setlocal foldmethod=indent
 autocmd FileType make setlocal noexpandtab
 
-" Fix for jedi-vim recursion error
-let g:jedi#auto_initialization = 0
-let g:jedi#popup_on_dot = 0
+" Fix for jedi-vim recursion error (vim only)
+if !has('nvim')
+    let g:jedi#auto_initialization = 0
+    let g:jedi#popup_on_dot = 0
+endif
+
+" 7. Neovim LSP + Completion (Python via Pyright)
+if has('nvim')
+lua << EOF
+-- Completion setup
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+
+cmp.setup({
+    snippet = {
+        expand = function(args) luasnip.lsp_expand(args.body) end,
+    },
+    mapping = cmp.mapping.preset.insert({
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<CR>']      = cmp.mapping.confirm({ select = true }),
+        ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then luasnip.expand_or_jump()
+            else fallback() end
+        end, { 'i', 's' }),
+        ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then luasnip.jump(-1)
+            else fallback() end
+        end, { 'i', 's' }),
+    }),
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+    }),
+})
+
+-- Pyright LSP (nvim 0.11+ native API - no nvim-lspconfig required)
+vim.lsp.config['pyright'] = {
+    cmd = { 'pyright-langserver', '--stdio' },
+    filetypes = { 'python' },
+    root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'pyrightconfig.json', '.git' },
+    capabilities = require('cmp_nvim_lsp').default_capabilities(),
+    settings = {
+        python = {
+            analysis = {
+                typeCheckingMode = 'basic',
+                autoSearchPaths  = true,
+                useLibraryCodeForTypes = true,
+            },
+        },
+    },
+}
+vim.lsp.enable('pyright')
+
+-- LSP key mappings
+local opts = { noremap = true, silent = true }
+vim.keymap.set('n', 'gd',         vim.lsp.buf.definition,   opts)  -- Go to definition
+vim.keymap.set('n', 'gr',         vim.lsp.buf.references,   opts)  -- Find references
+vim.keymap.set('n', 'K',          vim.lsp.buf.hover,        opts)  -- Hover docs
+vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,       opts)  -- Rename symbol
+vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,  opts)  -- Code actions
+vim.keymap.set('n', '[d',         vim.diagnostic.goto_prev, opts)  -- Prev diagnostic
+vim.keymap.set('n', ']d',         vim.diagnostic.goto_next, opts)  -- Next diagnostic
+EOF
+endif
