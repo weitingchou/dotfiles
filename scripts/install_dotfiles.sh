@@ -122,11 +122,8 @@ fi
 chsh -s $(which zsh)
 
 info "${BLUE}Installing oh-my-zsh...${NORMAL}"
-# XXX: We don't want to start zsh right after finished the oh-my-zsh installation since we still have works
-#      to do, so remove the 'env zsh' at the end of installation script
-#bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-#bash -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed -e 's/env zsh//g')"
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# Run unattended (RUNZSH=no prevents oh-my-zsh from launching zsh immediately)
+RUNZSH=no CHSH=no bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp $REPODIR/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
@@ -145,70 +142,32 @@ rsync --exclude ".git/" \
   --exclude "LICENSE-MIT.txt" \
   -avh --no-perms . $HOME;
 
-# TODO: Have problem with building vim from source code on MacOS
-if [[ "$OSTYPE" == "ubuntu" ]]; then
-  info "${BLUE}Fetching vim source...${NORMAL}"
-  if [ -d "/tmp/vim74" ]; then
-    rm -rf /tmp/vim74
-  fi
-  wget ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 || fail "Error: fetch vim source failed"
-  tar xjvf vim-7.4.tar.bz2 -C /tmp
-  rm -f vim-7.4.tar.bz2
+info "${BLUE}Installing vim-plug for Vim...${NORMAL}"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-  info "${BLUE}Fetching vimgdb patch...${NORMAL}"
-  if [ -d "/tmp/vimgdb-for-vim7.4" ]; then
-    rm -rf /tmp/vimgdb-for-vim7.4
-  fi
-  env git clone --depth=1 https://github.com/weitingchou/vimgdb-for-vim7.4.git /tmp/vimgdb-for-vim7.4 || fail "Error: git clone of vimgdb patch failed"
+info "${BLUE}Installing vim-plug for Neovim...${NORMAL}"
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-  info "${BLUE}Patching vim...${NORMAL}"
-  cd /tmp
-  patch -p0 < vimgdb-for-vim7.4/vim74.patch || fail "Error: patch vim failed"
-
-  info "${BLUE}Building patched vim...${NORMAL}"
-  cd vim74/src
-  make && sudo make install || fail "Error: build vim failed"
-
-  info "${BLUE}Copying vimgdb runtime...${NORMAL}"
-  if [ ! -d "$HOME/.vim" ]; then
-    mkdir $HOME/.vim
-  fi
-  cp -rf /tmp/vimgdb-for-vim7.4/vimgdb_runtime/* $HOME/.vim
-fi
-
-info "${BLUE}Installing neobundle...${NORMAL}"
-curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh || fail "Error: fetch neobundle failed"
-bash ./install.sh
-
-info "${BLUE}Installing powerline...${NORMAL}"
-pip install --user powerline-status
-if [[ "$OSTYPE" == "ubuntu" ]]; then
-  echo 'export PATH="$PATH:$HOME/.local/bin"' > $HOME/.path
-elif [[ "$OSTYPE" == "macos" ]]; then
-  echo 'export PATH="$PATH:$HOME/Library/Python/2.7/bin"' > $HOME/.path
-fi
-
-if [[ "$PLATFORM_TYPE" == "desktop" ]]; then
-  info "${BLUE}Installing powerline symbols/fonts...${NORMAL}"
-  wget https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-  wget https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
-  mkdir $HOME/.fonts
-  mv PowerlineSymbols.otf $HOME/.fonts/
-  fc-cache -vf $HOME/.fonts/
-  mv 10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d/
-fi
-
-info "${BLUE}Installing nodejs environment...${NORMAL}"
+info "${BLUE}Installing nodejs environment via nvm...${NORMAL}"
 if [[ ! "$NVM_DIR" == "" ]]; then
   rm -rf $NVM_DIR
 fi
-# Install nvm
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh)"
+# Install nvm (latest)
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh)"
 # Load nvm
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh"  ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 # Install nodejs (long-term support version)
 nvm install --lts
 
-success "installation completed without errors"
+info "${BLUE}Installing pyright (Python LSP for Neovim)...${NORMAL}"
+npm install -g pyright
+
+info "${BLUE}Installing Neovim plugins...${NORMAL}"
+nvim --headless +PlugInstall +qall 2>/dev/null || true
+
+success "Installation completed without errors."
+success "Open Neovim and run :PlugInstall if any plugins are missing."
 env zsh

@@ -17,27 +17,25 @@ sudo apt-get update
 # Install basic building tools
 sudo apt-get install -y language-pack-en
 sudo apt-get install -y build-essential
-sudo apt-get install -y ncurses-dev   # for building vim
 
 # Install zsh
 sudo apt-get install -y zsh
 sudo apt-get install -y zsh-doc
 
-# Install my favorite tools
-sudo apt-get install -y wget
-sudo apt-get install -y git
+# Install favorite tools
+sudo apt-get install -y wget curl git
 sudo apt-get install -y autojump
-sudo apt-get install -y silversearcher-ag # Need Ubuntu 13.10 or more
+sudo apt-get install -y silversearcher-ag
 sudo apt-get install -y tmux
 sudo apt-get install -y tree
 sudo apt-get install -y exuberant-ctags
 sudo apt-get install -y cscope
 sudo apt-get install -y g++
 
-# Install packages for later installation use
-sudo apt-get install -y python2.7
-sudo apt-get install -y python3.4
-sudo apt-get install -y python-pip
-pip install --upgrade pip   # upgrade pip
+# Python 3
+sudo apt-get install -y python3 python3-pip python3-venv
+
+# Neovim (latest stable via snap)
+sudo snap install nvim --classic
 
 bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"
