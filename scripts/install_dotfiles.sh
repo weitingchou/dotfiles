@@ -119,7 +119,7 @@ info "${BLUE}Making default shell to zsh...${NORMAL}"
 if [ ! $(grep "$(which zsh)" /etc/shells | wc -l) -ge 1 ]; then
   echo "$(which zsh)" | sudo tee -a /etc/shells
 fi
-chsh -s $(which zsh)
+sudo chsh -s $(which zsh) $USER
 
 info "${BLUE}Installing oh-my-zsh...${NORMAL}"
 # Run unattended (RUNZSH=no prevents oh-my-zsh from launching zsh immediately)
