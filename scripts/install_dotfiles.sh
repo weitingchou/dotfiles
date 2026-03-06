@@ -126,8 +126,8 @@ info "${BLUE}Installing oh-my-zsh...${NORMAL}"
 RUNZSH=no CHSH=no bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
-cp $REPODIR/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
-cp $REPODIR/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
+cp -r $REPODIR/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
+cp -r $REPODIR/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
 info "${BLUE}Copying dotfiles...${NORMAL}"
 cd $REPODIR
