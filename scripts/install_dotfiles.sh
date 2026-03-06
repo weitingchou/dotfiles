@@ -165,6 +165,9 @@ nvm install --lts
 info "${BLUE}Installing pyright (Python LSP for Neovim)...${NORMAL}"
 npm install -g pyright
 
+info "${BLUE}Installing Claude Code CLI...${NORMAL}"
+npm install -g @anthropic-ai/claude-code
+
 info "${BLUE}Installing Neovim plugins...${NORMAL}"
 nvim --headless +PlugInstall +qall 2>/dev/null || true
 
