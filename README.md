@@ -13,7 +13,7 @@ This project is a fork of [Mathias Bynens](https://github.com/mathiasbynens/)'s 
 You can clone the repository wherever you want. (I like to keep it in `~/Projects/dotfiles`, with `~/dotfiles` as a symlink.) The bootstrapper script will pull in the latest version and copy the files to your home folder.
 
 ```bash
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/bootstrap.sh)"
 ```
 
 To update, `cd` into your local `dotfiles` repository and then:

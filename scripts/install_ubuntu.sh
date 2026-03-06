@@ -38,4 +38,4 @@ sudo apt-get install -y python3 python3-pip python3-venv
 # Neovim (latest stable via snap)
 sudo snap install nvim --classic
 
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"

@@ -80,4 +80,4 @@ brew install woff2
 # Remove outdated versions from the cellar.
 brew cleanup
 
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "macos"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "macos"

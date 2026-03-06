@@ -26,7 +26,7 @@ Personal dotfiles for macOS and Ubuntu (server/desktop), managed via shell scrip
 
 **On a new Ubuntu server:**
 ```bash
-bash -c "$(curl -fsSL https://raw.github.com/weitingchou/dotfiles/master/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/bootstrap.sh)"
 ```
 
 This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
