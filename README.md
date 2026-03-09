@@ -8,65 +8,80 @@ This project is a fork of [Mathias Bynens](https://github.com/mathiasbynens/)'s 
 
 **Warning:** If you want to give these dotfiles a try, you should first fork this repository, review the code, and remove things you don’t want or need. Don’t blindly use my settings unless you know what that entails. Use at your own risk!
 
-### Using Git and the bootstrap script
-
-You can clone the repository wherever you want. (I like to keep it in `~/Projects/dotfiles`, with `~/dotfiles` as a symlink.) The bootstrapper script will pull in the latest version and copy the files to your home folder.
+### Ubuntu
 
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/bootstrap.sh)"
 ```
 
-To update, `cd` into your local `dotfiles` repository and then:
+This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
+
+### macOS
 
 ```bash
-source bootstrap.sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/bootstrap.sh)"
 ```
 
-Alternatively, to update while avoiding the confirmation prompt:
+This runs: `bootstrap.sh` → `install_macos.sh` → `install_dotfiles.sh`
 
-### Specify the `$PATH`
+> **Note:** `install_dotfiles.sh` clones this repo from GitHub, so changes must be pushed before running on a new machine.
 
-If `~/.path` exists, it will be sourced along with the other files, before any feature testing (such as [detecting which version of `ls` is being used](https://github.com/mathiasbynens/dotfiles/blob/aff769fd75225d8f2e481185a71d5e05b76002dc/.aliases#L21-26)) takes place.
+## What Gets Installed
 
-Here’s an example `~/.path` file that adds `/usr/local/bin` to the `$PATH`:
+### Ubuntu (`install_ubuntu.sh`)
+- Build tools: `build-essential`, `g++`
+- Shell: `zsh`
+- Utilities: `wget`, `curl`, `git`, `rsync`, `autojump`, `silversearcher-ag`, `tmux`, `tree`, `ctags`, `cscope`
+- Python: `python3`, `pip`, `venv`
+- GitHub CLI (`gh`)
+- AWS CLI v2
+- Neovim (latest, via unstable PPA)
 
-```bash
-export PATH="/usr/local/bin:$PATH"
-```
+### macOS (`install_macos.sh`)
+- Homebrew
+- GNU core utilities, `wget`, `vim`, `zsh`, `git`, `tmux`, `tree`, `ctags`, `cscope`, `autojump`, `the_silver_searcher`
+- GitHub CLI (`gh`)
+- AWS CLI (`awscli`)
 
-### Add custom commands without creating a new fork
+### Both platforms (`install_dotfiles.sh`)
+- oh-my-zsh + plugins: `zsh-autosuggestions`, `zsh-syntax-highlighting`
+- Powerlevel10k theme
+- vim-plug (for Vim and Neovim)
+- nvm + Node.js LTS
+- Pyright (Python LSP, installed globally via npm)
+- Claude Code CLI
 
-If `~/.extra` exists, it will be sourced along with the other files. You can use this to add a few custom commands without the need to fork this entire repository, or to add commands you don’t want to commit to a public repository.
+## Key Tools
 
-My `~/.extra` looks something like this:
+| Tool | Purpose |
+|------|---------|
+| zsh + oh-my-zsh | Shell |
+| Neovim | Primary editor (native LSP via nvim 0.11+) |
+| Vim | Fallback editor |
+| tmux | Terminal multiplexer (prefix: `C-a`) |
+| nvm | Node version manager |
+| Pyright | Python LSP for Neovim |
+| AWS CLI v2 | AWS access |
+| gh | GitHub CLI |
+| Claude Code | AI coding assistant |
 
-```bash
-# Git credentials
-# Not in the repository, to prevent people from accidentally committing under my name
-GIT_AUTHOR_NAME="Mathias Bynens"
-GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
-git config --global user.name "$GIT_AUTHOR_NAME"
-GIT_AUTHOR_EMAIL="mathias@mailinator.com"
-GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
-git config --global user.email "$GIT_AUTHOR_EMAIL"
-```
+## After Installing
 
-You could also use `~/.extra` to override settings, functions and aliases from my dotfiles repository. It’s probably better to [fork this repository](https://github.com/weitingchou/dotfiles/fork) instead, though.
+1. Open Neovim — plugins auto-install via headless `PlugInstall` during setup
+2. Run `:PlugInstall` manually if any plugins are missing
+3. Pyright LSP activates automatically for `.py` files
+4. Log out and back in (or open a new login shell) for zsh to become the default shell
 
-### Sensible OS X defaults
+## Add Custom Commands
 
-When setting up a new Mac, you may want to set some sensible OS X defaults:
+If `~/.extra` exists, it will be sourced along with the other files. Use it to add commands you don’t want to commit to a public repository (e.g. git credentials, private aliases).
+
+### Sensible macOS defaults
+
+When setting up a new Mac, you may want to set some sensible macOS defaults:
 
 ```bash
 ./.macos
-```
-
-### Install Homebrew formulae
-
-When setting up a new Mac, you may want to install some common [Homebrew](http://brew.sh/) formulae (after installing Homebrew, of course):
-
-```bash
-./brew.sh
 ```
 
 ## Feedback
@@ -79,7 +94,7 @@ Suggestions/improvements
 
 ## Thanks to…
 
-* [Mathias Bynens](https://github.com/mathiasbynens/dotfiles.git)
-* [Zach Holman](https://github.com/holman/dotfiles.git)
+* [Mathias Bynens](https://github.com/mathiasbynens/dotfiles)
+* [Zach Holman](https://github.com/holman/dotfiles)
 * [Kevin Smets](https://gist.github.com/kevin-smets/8568070)
 
