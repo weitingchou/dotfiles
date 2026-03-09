@@ -35,6 +35,13 @@ sudo apt-get install -y g++
 # Python 3
 sudo apt-get install -y python3 python3-pip python3-venv
 
+# AWS CLI v2
+printf "\r  [ \033[00;34m..\033[0m ] Installing AWS CLI v2...\n"
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+unzip -q /tmp/awscliv2.zip -d /tmp/awscliv2
+sudo /tmp/awscliv2/aws/install --update
+rm -rf /tmp/awscliv2.zip /tmp/awscliv2
+
 # Neovim (0.11+ required for native LSP API - use unstable PPA)
 sudo add-apt-repository -y ppa:neovim-ppa/unstable
 sudo apt-get update

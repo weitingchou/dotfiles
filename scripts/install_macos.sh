@@ -56,6 +56,9 @@ brew install homebrew/dupes/openssh
 # Install zsh
 brew install zsh
 
+# Install AWS CLI
+brew install awscli
+
 # Install my favorite tools
 brew install git
 brew install autojump
