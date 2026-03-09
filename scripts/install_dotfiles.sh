@@ -122,6 +122,10 @@ fi
 sudo chsh -s $(which zsh) $USER
 
 info "${BLUE}Installing oh-my-zsh...${NORMAL}"
+# Remove existing installation so the installer doesn't abort on re-runs
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  rm -rf "$HOME/.oh-my-zsh"
+fi
 # Run unattended (RUNZSH=no prevents oh-my-zsh from launching zsh immediately)
 RUNZSH=no CHSH=no bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
