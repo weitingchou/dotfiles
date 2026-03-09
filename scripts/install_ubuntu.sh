@@ -23,7 +23,7 @@ sudo apt-get install -y zsh
 sudo apt-get install -y zsh-doc
 
 # Install favorite tools
-sudo apt-get install -y wget curl git
+sudo apt-get install -y wget curl git rsync
 sudo apt-get install -y autojump
 sudo apt-get install -y silversearcher-ag
 sudo apt-get install -y tmux
