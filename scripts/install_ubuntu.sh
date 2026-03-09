@@ -35,6 +35,15 @@ sudo apt-get install -y g++
 # Python 3
 sudo apt-get install -y python3 python3-pip python3-venv
 
+# GitHub CLI
+printf "\r  [ \033[00;34m..\033[0m ] Installing GitHub CLI...\n"
+sudo mkdir -p -m 755 /etc/apt/keyrings
+wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt-get update
+sudo apt-get install -y gh
+
 # AWS CLI v2
 printf "\r  [ \033[00;34m..\033[0m ] Installing AWS CLI v2...\n"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"

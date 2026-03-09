@@ -59,6 +59,9 @@ brew install zsh
 # Install AWS CLI
 brew install awscli
 
+# Install GitHub CLI
+brew install gh
+
 # Install my favorite tools
 brew install git
 brew install autojump
