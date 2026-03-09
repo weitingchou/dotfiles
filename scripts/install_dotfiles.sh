@@ -129,6 +129,11 @@ info "${BLUE}Copying custom settings to oh-my-zsh...${NORMAL}"
 cp -r $REPODIR/init/oh-my-zsh/themes/* $HOME/.oh-my-zsh/themes/
 cp -r $REPODIR/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
+info "${BLUE}Installing oh-my-zsh plugins...${NORMAL}"
+ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM}/plugins/zsh-autosuggestions
+git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting
+
 info "${BLUE}Copying dotfiles...${NORMAL}"
 cd $REPODIR
 rsync --exclude ".git/" \
@@ -173,4 +178,5 @@ nvim --headless +PlugInstall +qall 2>/dev/null || true
 
 success "Installation completed without errors."
 success "Open Neovim and run :PlugInstall if any plugins are missing."
+success "Log out and log back in (or open a new login shell) for zsh to become the default shell."
 env zsh
