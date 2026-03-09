@@ -119,8 +119,11 @@ export EDITOR='vim'
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias use-java-17="export JAVA_HOME=`/usr/libexec/java_home -v 17`; java -version"
-alias use-java-latest="export JAVA_HOME=`/usr/libexec/java_home`; java -version"
+# Java aliases (macOS only)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias use-java-17="export JAVA_HOME=`/usr/libexec/java_home -v 17`; java -version"
+  alias use-java-latest="export JAVA_HOME=`/usr/libexec/java_home`; java -version"
+fi
 
 # Omit duplicates and commands that begin with a space from history.
 export HISTCONTROL='ignoreboth'
