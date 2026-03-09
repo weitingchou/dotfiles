@@ -35,8 +35,8 @@ sudo apt-get install -y g++
 # Python 3
 sudo apt-get install -y python3 python3-pip python3-venv
 
-# Neovim (latest stable via PPA - works on servers without snapd)
-sudo add-apt-repository -y ppa:neovim-ppa/stable
+# Neovim (0.11+ required for native LSP API - use unstable PPA)
+sudo add-apt-repository -y ppa:neovim-ppa/unstable
 sudo apt-get update
 sudo apt-get install -y neovim
 
