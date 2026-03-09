@@ -108,7 +108,7 @@ REPODIR="/tmp/dotfiles"
 if [ -d "$REPODIR" ]; then # Delete the repodir if exists
   rm -rf $REPODIR
 fi
-hash git >/dev/null 2>&1 || fails "Error: git clone of dotfiles repo failed"
+hash git >/dev/null 2>&1 || fail "Error: git clone of dotfiles repo failed"
 env git clone --depth=1 https://github.com/weitingchou/dotfiles.git $REPODIR || fail "Error: git clone of dotfiles repo failed"
 
 info "${BLUE}Checking zsh installation..."

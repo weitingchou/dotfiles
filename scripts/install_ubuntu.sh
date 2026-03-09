@@ -35,7 +35,9 @@ sudo apt-get install -y g++
 # Python 3
 sudo apt-get install -y python3 python3-pip python3-venv
 
-# Neovim (latest stable via snap)
-sudo snap install nvim --classic
+# Neovim (latest stable via PPA - works on servers without snapd)
+sudo add-apt-repository -y ppa:neovim-ppa/stable
+sudo apt-get update
+sudo apt-get install -y neovim
 
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"

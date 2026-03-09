@@ -79,7 +79,7 @@ set cursorline
 set laststatus=2
 set showmatch
 let g:solarized_termcolors=256
-colorscheme solarized
+silent! colorscheme solarized
 set background=dark
 
 " 5. Custom Functions (Keeping your logic)
@@ -118,9 +118,10 @@ endif
 " 7. Neovim LSP + Completion (Python via Pyright)
 if has('nvim')
 lua << EOF
--- Completion setup
-local cmp = require('cmp')
-local luasnip = require('luasnip')
+-- Completion setup (guard against missing plugins during initial install)
+local ok_cmp, cmp = pcall(require, 'cmp')
+local ok_luasnip, luasnip = pcall(require, 'luasnip')
+if not (ok_cmp and ok_luasnip) then return end
 
 cmp.setup({
     snippet = {
@@ -147,11 +148,12 @@ cmp.setup({
 })
 
 -- Pyright LSP (nvim 0.11+ native API - no nvim-lspconfig required)
+local ok_cmp_lsp, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
 vim.lsp.config['pyright'] = {
     cmd = { 'pyright-langserver', '--stdio' },
     filetypes = { 'python' },
     root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'pyrightconfig.json', '.git' },
-    capabilities = require('cmp_nvim_lsp').default_capabilities(),
+    capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities() or nil,
     settings = {
         python = {
             analysis = {
