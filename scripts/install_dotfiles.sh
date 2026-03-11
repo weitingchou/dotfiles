@@ -181,6 +181,30 @@ npm install -g @anthropic-ai/claude-code
 info "${BLUE}Installing Neovim plugins...${NORMAL}"
 nvim --headless +PlugInstall +qall 2>/dev/null || true
 
+info "${BLUE}Generating SSH key...${NORMAL}"
+SSH_KEY="$HOME/.ssh/id_ed25519"
+if [ -f "$SSH_KEY" ]; then
+  info "SSH key already exists at $SSH_KEY, skipping."
+else
+  read -p "Enter email for SSH key comment (leave blank to skip): " SSH_EMAIL
+  echo ''
+  if [ -n "$SSH_EMAIL" ]; then
+    mkdir -p "$HOME/.ssh"
+    chmod 700 "$HOME/.ssh"
+    ssh-keygen -t ed25519 -C "$SSH_EMAIL" -f "$SSH_KEY" -N ""
+    chmod 600 "$SSH_KEY"
+    chmod 644 "${SSH_KEY}.pub"
+    success "SSH key generated: $SSH_KEY"
+    echo ''
+    echo "Your public key (add this to GitHub or authorized_keys):"
+    echo ''
+    cat "${SSH_KEY}.pub"
+    echo ''
+  else
+    info "Skipping SSH key generation."
+  fi
+fi
+
 success "Installation completed without errors."
 success "Open Neovim and run :PlugInstall if any plugins are missing."
 success "Log out and log back in (or open a new login shell) for zsh to become the default shell."
