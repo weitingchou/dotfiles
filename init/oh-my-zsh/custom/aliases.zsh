@@ -65,4 +65,7 @@ fi
 # Reload the shell (i.e. invoke as a login shell)
 alias reload="exec $SHELL -l"
 
+# Claude with custom kubeconfig
+alias claude="KUBECONFIG=$HOME/.kube/claude-config claude"
+
 unset OSTYPE
