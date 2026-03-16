@@ -66,6 +66,6 @@ fi
 alias reload="exec $SHELL -l"
 
 # Claude with custom kubeconfig
-alias claude="KUBECONFIG=$HOME/.kube/claude-config claude"
+alias claude="KUBECONFIG=$HOME/.kube/claude-config CLAUDE_TELEMETRY=disabled claude"
 
 unset OSTYPE
