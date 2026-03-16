@@ -57,10 +57,25 @@ brew install homebrew/dupes/openssh
 brew install zsh
 
 # Install AWS CLI
-brew install awscli
+if command -v aws &>/dev/null; then
+    echo "AWS CLI already installed, skipping."
+else
+    brew install awscli
+fi
 
 # Install GitHub CLI
-brew install gh
+if command -v gh &>/dev/null; then
+    echo "GitHub CLI already installed, skipping."
+else
+    brew install gh
+fi
+
+# Install kubectl
+if command -v kubectl &>/dev/null; then
+    echo "kubectl already installed, skipping."
+else
+    brew install kubectl
+fi
 
 # Install my favorite tools
 brew install git

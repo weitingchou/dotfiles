@@ -36,24 +36,49 @@ sudo apt-get install -y g++
 sudo apt-get install -y python3 python3-pip python3-venv
 
 # GitHub CLI
-printf "\r  [ \033[00;34m..\033[0m ] Installing GitHub CLI...\n"
-sudo mkdir -p -m 755 /etc/apt/keyrings
-wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
-sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-sudo apt-get update
-sudo apt-get install -y gh
+if command -v gh &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] GitHub CLI already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing GitHub CLI...\n"
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+    sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install -y gh
+fi
 
 # AWS CLI v2
-printf "\r  [ \033[00;34m..\033[0m ] Installing AWS CLI v2...\n"
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-unzip -q /tmp/awscliv2.zip -d /tmp/awscliv2
-sudo /tmp/awscliv2/aws/install --update
-rm -rf /tmp/awscliv2.zip /tmp/awscliv2
+if command -v aws &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] AWS CLI already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing AWS CLI v2...\n"
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+    unzip -q /tmp/awscliv2.zip -d /tmp/awscliv2
+    sudo /tmp/awscliv2/aws/install --update
+    rm -rf /tmp/awscliv2.zip /tmp/awscliv2
+fi
+
+# kubectl
+if command -v kubectl &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] kubectl already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing kubectl...\n"
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install -y kubectl
+fi
 
 # Neovim (0.11+ required for native LSP API - use unstable PPA)
-sudo add-apt-repository -y ppa:neovim-ppa/unstable
-sudo apt-get update
-sudo apt-get install -y neovim
+if command -v nvim &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] Neovim already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing Neovim...\n"
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable
+    sudo apt-get update
+    sudo apt-get install -y neovim
+fi
 
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"
