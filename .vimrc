@@ -57,7 +57,7 @@ set encoding=utf-8
 set history=10000
 set hidden                   " Switch buffers without saving [cite: 9]
 set autoread                 " Reload files changed outside Vim [cite: 9]
-set clipboard=unnamedplus    " Modern clipboard sync
+set clipboard=unnamed        " macOS pasteboard sync
 
 " Formatting [cite: 11, 12, 13]
 set autoindent
