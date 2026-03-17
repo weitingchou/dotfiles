@@ -77,6 +77,13 @@ else
     brew install kubectl
 fi
 
+# Install Helm
+if command -v helm &>/dev/null; then
+    echo "Helm already installed, skipping."
+else
+    brew install helm
+fi
+
 # Install my favorite tools
 brew install git
 brew install autojump
