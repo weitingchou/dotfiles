@@ -76,10 +76,7 @@ if command -v helm &>/dev/null; then
     printf "\r  [ \033[00;32mok\033[0m ] Helm already installed, skipping.\n"
 else
     printf "\r  [ \033[00;34m..\033[0m ] Installing Helm...\n"
-    curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install -y helm
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 fi
 
 # Neovim (0.11+ required for native LSP API - use unstable PPA)
