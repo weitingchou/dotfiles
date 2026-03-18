@@ -176,7 +176,7 @@ info "${BLUE}Installing pyright (Python LSP for Neovim)...${NORMAL}"
 npm install -g pyright
 
 info "${BLUE}Installing Claude Code CLI...${NORMAL}"
-curl -fsSL https://claude.ai/install.sh | sh
+curl -fsSL https://claude.ai/install.sh | bash
 
 info "${BLUE}Installing Neovim plugins...${NORMAL}"
 nvim --headless +PlugInstall +qall 2>/dev/null || true
