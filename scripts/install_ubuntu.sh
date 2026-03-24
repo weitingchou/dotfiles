@@ -79,6 +79,18 @@ else
     curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 fi
 
+# eksctl
+if command -v eksctl &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] eksctl already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing eksctl...\n"
+    ARCH=amd64
+    PLATFORM=$(uname -s)_$ARCH
+    curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
+    tar -xzf "eksctl_${PLATFORM}.tar.gz" -C /tmp && rm "eksctl_${PLATFORM}.tar.gz"
+    sudo mv /tmp/eksctl /usr/local/bin
+fi
+
 # Neovim (0.11+ required for native LSP API - use unstable PPA)
 if command -v nvim &>/dev/null; then
     printf "\r  [ \033[00;32mok\033[0m ] Neovim already installed, skipping.\n"
