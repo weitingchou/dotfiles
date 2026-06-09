@@ -43,15 +43,18 @@ brew install moreutils
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
 brew install findutils
 # Install GUN `sed`, overwriting the built-in `sed`.
-brew install gnu-sed --with-default-name
+brew install gnu-sed
 
 # Install `wget` with IRI support.
-brew install wget --with-iri
+#brew install wget --with-iri
+brew install wget
 
-# Install more recent verions of some OS X tools.
-brew install vim --override-system-vi
-brew install homebrew/dupes/grep
-brew install homebrew/dupes/openssh
+# Install more recent versions of some OS X tools.
+# (The homebrew/dupes tap was removed; these now live in homebrew-core.)
+brew install vim
+brew install neovim
+brew install grep
+brew install openssh
 
 # Install zsh
 brew install zsh
@@ -93,17 +96,10 @@ brew install tree
 brew install ctags
 brew install cscope
 
-# Install packages for later installation use
-brew install python       # pyhton 2.7, will also install pip
-pip install --upgrade pip setuptools
-brew install python3      # will install pip3
-pip3 install --upgrade pip setuptools wheel
-
-# Install font tools.
-brew tap bramstein/webfonttools
-brew install sfnt2woff
-brew install sfnt2woff-zopfli
-brew install woff2
+# Install Python 3 (provides pip3). Homebrew no longer ships Python 2.
+# Note: Homebrew's Python is an externally-managed environment (PEP 668), so
+# don't `pip install --upgrade` against it globally — use a venv instead.
+brew install python3
 
 # Remove outdated versions from the cellar.
 brew cleanup

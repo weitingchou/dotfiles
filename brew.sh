@@ -1,32 +1,26 @@
 #!/usr/bin/env bash
 
-# Install command-line tools using Homebrew.
-
-# Ask for the administrator password upfront.
-sudo -v
-
-# Keep-alive: update existing `sudo` time stamp until the script has finished.
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# Optional grab-bag of CTF/security tools and extra command-line binaries.
+# NOTE: This script is NOT part of the install flow (bootstrap.sh only runs
+# scripts/install_macos.sh). Run it manually if you want these extras.
 
 # Make sure we’re using the latest Homebrew.
 brew update
 
 # Upgrade any already-installed formulae.
-brew upgrade --all
+brew upgrade
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 brew install coreutils
-sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
+# Expose an un-prefixed `sha256sum` (Intel and Apple Silicon safe; re-run safe).
+ln -sf "$(brew --prefix coreutils)/libexec/gnubin/sha256sum" "$(brew --prefix)/bin/sha256sum"
 
-# Install `wget` with IRI support.
-brew install wget --with-iri
+# Install `wget` (IRI support is now built in; the old --with-iri flag is gone).
+brew install wget
 
-# Install RingoJS and Narwhal.
-# Note that the order in which these are installed is important;
-# see http://git.io/brew-narwhal-ringo.
+# Install RingoJS (a JVM-based JavaScript runtime).
 brew install ringojs
-brew install narwhal
 
 # Install some CTF tools; see https://github.com/ctfs/write-ups.
 brew install aircrack-ng
@@ -38,7 +32,6 @@ brew install dex2jar
 brew install dns2tcp
 brew install fcrackzip
 brew install foremost
-brew install hashpump
 brew install hydra
 brew install john
 brew install knock
@@ -49,7 +42,6 @@ brew install socat
 brew install sqlmap
 brew install tcpflow
 brew install tcpreplay
-brew install tcptrace
 brew install ucspi-tcp # `tcpserver` etc.
 brew install xpdf
 brew install xz
@@ -57,9 +49,8 @@ brew install xz
 # Install other useful binaries.
 brew install ack
 brew install dark-mode
-#brew install exiv2
 brew install git-lfs
-brew install imagemagick --with-webp
+brew install imagemagick
 brew install lua
 brew install lynx
 brew install p7zip
