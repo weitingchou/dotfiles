@@ -37,6 +37,7 @@ This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
 
 - **Shell**: zsh + oh-my-zsh
 - **Editor**: Neovim (primary) with vim-plug for plugins
+  - Installed during setup: `brew install neovim` (macOS) / `neovim-ppa/unstable` PPA (Ubuntu, for 0.11+)
   - Python LSP: Pyright via nvim 0.11+ native LSP API (no nvim-lspconfig needed)
   - Completion: nvim-cmp + LuaSnip
   - Treesitter for syntax
