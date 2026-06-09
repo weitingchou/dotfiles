@@ -6,7 +6,6 @@ Personal dotfiles for macOS and Ubuntu (server/desktop), managed via shell scrip
 
 ```
 .                          # Dotfiles copied directly to $HOME on install
-├── .p10k.zsh              # powerlevel10k prompt config (sourced by .zshrc)
 ├── .vimrc                 # Shared vim/neovim config (vim-plug, LSP for neovim)
 ├── .gitconfig             # Git aliases and settings
 ├── .tmux.conf             # Tmux config (prefix: C-a, vim-style pane navigation)

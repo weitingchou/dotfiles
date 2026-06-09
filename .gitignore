@@ -56,3 +56,6 @@ __pycache__/
 htmlcov/
 *.coverage
 *.coverage.*
+
+# Machine-local powerlevel10k prompt config (kept local, not tracked/deployed)
+.p10k.zsh
