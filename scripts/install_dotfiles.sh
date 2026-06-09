@@ -151,6 +151,7 @@ cd $REPODIR
 rsync --exclude ".git/" \
   --exclude ".DS_Store" \
   --exclude ".macos" \
+  --exclude ".p10k.zsh" \
   --exclude "bin/" \
   --exclude "init/" \
   --exclude "scripts/" \
