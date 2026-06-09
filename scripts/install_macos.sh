@@ -17,6 +17,9 @@ brew cleanup
 # Install iTerm2
 brew install --cask iterm2
 
+# Install the font used by the "Solarized Dark Patched" iTerm2 profile.
+brew install --cask font-source-code-pro-for-powerline
+
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don't forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 # XXX: Already added the path in ~/.path

@@ -162,6 +162,10 @@ if [ "$OSTYPE" = "macos" ]; then
   cp "$REPODIR/init/iterm2/com.googlecode.iterm2.plist" "$ITERM_PREFS_DIR/"
   defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$ITERM_PREFS_DIR"
   defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+  # Dynamic Profiles (e.g. "Solarized Dark Patched") — iTerm2 loads these live.
+  ITERM_DYNAMIC_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+  mkdir -p "$ITERM_DYNAMIC_DIR"
+  cp "$REPODIR"/init/iterm2/DynamicProfiles/*.json "$ITERM_DYNAMIC_DIR/"
   success "iTerm2 will load prefs from $ITERM_PREFS_DIR (restart iTerm2 to apply)."
 fi
 

@@ -20,7 +20,9 @@ Personal dotfiles for macOS and Ubuntu (server/desktop), managed via shell scrip
     ├── oh-my-zsh/
     │   ├── custom/        # aliases.zsh, functions.zsh (copied to ~/.oh-my-zsh/custom/)
     │   └── themes/        # richchou.zsh-theme, powerlevel10k (copied to ~/.oh-my-zsh/themes/)
-    └── iterm2/            # com.googlecode.iterm2.plist (macOS-only iTerm2 profile sync)
+    └── iterm2/            # macOS-only iTerm2 config
+        ├── com.googlecode.iterm2.plist   # prefs (synced to ~/.config/iterm2)
+        └── DynamicProfiles/  # *.json profiles (e.g. Solarized Dark Patched)
 ```
 
 ## Install Flow
@@ -59,6 +61,10 @@ This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
   settings in the iTerm2 GUI, re-export with:
   `defaults export com.googlecode.iterm2 init/iterm2/com.googlecode.iterm2.plist`
   (optionally `plutil -convert xml1` it for a clean diff), then commit.
+- `init/iterm2/DynamicProfiles/*.json` → `~/Library/Application Support/iTerm2/DynamicProfiles/`
+  (macOS only). iTerm2 loads these as live, named profiles (e.g. "Solarized Dark
+  Patched"). Generate one from an `.itermcolors` preset by wrapping its color keys
+  in `{"Profiles":[{"Name":...,"Guid":...,<colors>}]}`.
 
 ## After Installing on a New Machine
 
