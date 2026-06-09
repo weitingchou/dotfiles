@@ -116,10 +116,14 @@ command -v zsh > /dev/null 2>&1 || fail "${YELLOW}Zsh is not installed!${NORMAL}
 version_gte "$(zsh --version | cut -d' ' -f 2)" "4.3.9" || fail "zsh version should be v4.3.9 or more"
 
 info "${BLUE}Making default shell to zsh...${NORMAL}"
-if [ ! $(grep "$(which zsh)" /etc/shells | wc -l) -ge 1 ]; then
-  echo "$(which zsh)" | sudo tee -a /etc/shells
+if [ "$SHELL" = "$(which zsh)" ]; then
+  success "Default shell is already zsh, skipping."
+else
+  if [ ! $(grep "$(which zsh)" /etc/shells | wc -l) -ge 1 ]; then
+    echo "$(which zsh)" | sudo tee -a /etc/shells
+  fi
+  sudo chsh -s $(which zsh) $USER
 fi
-sudo chsh -s $(which zsh) $USER
 
 info "${BLUE}Installing oh-my-zsh...${NORMAL}"
 # Remove existing installation so the installer doesn't abort on re-runs
@@ -135,9 +139,12 @@ cp -r $REPODIR/init/oh-my-zsh/custom/* $HOME/.oh-my-zsh/custom/
 
 info "${BLUE}Installing oh-my-zsh plugins...${NORMAL}"
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM}/plugins/zsh-autosuggestions
-git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting
-git clone --depth=1 https://github.com/romkatv/powerlevel10k ${ZSH_CUSTOM}/themes/powerlevel10k
+[ -d "${ZSH_CUSTOM}/plugins/zsh-autosuggestions" ] || \
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM}/plugins/zsh-autosuggestions
+[ -d "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting" ] || \
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting
+[ -d "${ZSH_CUSTOM}/themes/powerlevel10k" ] || \
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k ${ZSH_CUSTOM}/themes/powerlevel10k
 
 info "${BLUE}Copying dotfiles...${NORMAL}"
 cd $REPODIR

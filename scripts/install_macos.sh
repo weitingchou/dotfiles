@@ -15,12 +15,20 @@ brew upgrade
 brew cleanup
 
 # Install iTerm2
-brew install --cask iterm2
+if brew list --cask iterm2 &>/dev/null; then
+    echo "iTerm2 already installed, skipping."
+else
+    brew install --cask iterm2
+fi
 
 # Install the font used by the "Solarized Dark Patched" iTerm2 profile.
 # Nerd Font variant of Source Code Pro: includes Powerline arrows AND the icon
 # glyphs that powerlevel10k needs (plain "for Powerline" font shows ? for icons).
-brew install --cask font-sauce-code-pro-nerd-font
+if brew list --cask font-sauce-code-pro-nerd-font &>/dev/null; then
+    echo "Source Code Pro Nerd Font already installed, skipping."
+else
+    brew install --cask font-sauce-code-pro-nerd-font
+fi
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don't forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
