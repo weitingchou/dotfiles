@@ -152,6 +152,19 @@ rsync --exclude ".git/" \
   --exclude "LICENSE-MIT.txt" \
   -avh --no-perms . $HOME;
 
+# iTerm2 is macOS-only; sync its profile from the repo and point iTerm at it.
+# init/ is excluded from the rsync above, so copy the plist explicitly to a
+# persistent folder and tell iTerm2 to load (and save) its prefs from there.
+if [ "$OSTYPE" = "macos" ]; then
+  info "${BLUE}Configuring iTerm2 profile sync...${NORMAL}"
+  ITERM_PREFS_DIR="$HOME/.config/iterm2"
+  mkdir -p "$ITERM_PREFS_DIR"
+  cp "$REPODIR/init/iterm2/com.googlecode.iterm2.plist" "$ITERM_PREFS_DIR/"
+  defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$ITERM_PREFS_DIR"
+  defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+  success "iTerm2 will load prefs from $ITERM_PREFS_DIR (restart iTerm2 to apply)."
+fi
+
 info "${BLUE}Installing vim-plug for Vim...${NORMAL}"
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim

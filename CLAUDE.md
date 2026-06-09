@@ -11,15 +11,16 @@ Personal dotfiles for macOS and Ubuntu (server/desktop), managed via shell scrip
 ├── .tmux.conf             # Tmux config (prefix: C-a, vim-style pane navigation)
 ├── .editorconfig          # Editor whitespace/indent rules
 ├── bootstrap.sh           # Entry point: detects OS, calls platform install script
-├── brew.sh                # macOS Homebrew package installs
+├── brew.sh                # Optional CTF/security tools (NOT in install flow; run manually)
 ├── scripts/
 │   ├── install_macos.sh   # macOS package setup
 │   ├── install_ubuntu.sh  # Ubuntu package setup (calls install_dotfiles.sh)
 │   └── install_dotfiles.sh # Clone repo, set up zsh/oh-my-zsh, vim-plug, nvm, pyright
 └── init/
-    └── oh-my-zsh/
-        ├── custom/        # aliases.zsh, functions.zsh (copied to ~/.oh-my-zsh/custom/)
-        └── themes/        # richchou.zsh-theme, powerlevel10k (copied to ~/.oh-my-zsh/themes/)
+    ├── oh-my-zsh/
+    │   ├── custom/        # aliases.zsh, functions.zsh (copied to ~/.oh-my-zsh/custom/)
+    │   └── themes/        # richchou.zsh-theme, powerlevel10k (copied to ~/.oh-my-zsh/themes/)
+    └── iterm2/            # com.googlecode.iterm2.plist (macOS-only iTerm2 profile sync)
 ```
 
 ## Install Flow
@@ -52,6 +53,12 @@ This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
 - `.macos`, `bin/`, `init/`, `scripts/`, `bootstrap.sh` are excluded from the rsync
 - `init/oh-my-zsh/custom/*` → `~/.oh-my-zsh/custom/`
 - `init/oh-my-zsh/themes/*` → `~/.oh-my-zsh/themes/`
+- `init/iterm2/com.googlecode.iterm2.plist` → `~/.config/iterm2/` (macOS only); install
+  then points iTerm2 at that folder via `defaults write com.googlecode.iterm2
+  {PrefsCustomFolder,LoadPrefsFromCustomFolder}`. To update the repo after changing
+  settings in the iTerm2 GUI, re-export with:
+  `defaults export com.googlecode.iterm2 init/iterm2/com.googlecode.iterm2.plist`
+  (optionally `plutil -convert xml1` it for a clean diff), then commit.
 
 ## After Installing on a New Machine
 
