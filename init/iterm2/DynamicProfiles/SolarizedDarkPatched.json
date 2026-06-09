@@ -3,7 +3,8 @@
     {
       "Name": "Solarized Dark Patched",
       "Guid": "Solarized-Dark-Patched",
-      "Normal Font": "SourceCodeProForPowerline-Regular 16",
+      "Normal Font": "SauceCodeProNF 12",
+      "Show Mark Indicators": false,
       "Custom Command": "No",
       "Initial Text": "",
       "Ansi 0 Color": {
