@@ -100,6 +100,20 @@ else
     brew install helm
 fi
 
+# Install Docker CLI + Compose + Colima (container runtime for macOS).
+# macOS can't run containers natively, so Colima provides a lightweight Linux
+# VM. It runs PER-USER: each account (including a non-admin sandbox user) starts
+# its OWN daemon with `colima start`, so there's no shared daemon and no sudo at
+# runtime. The `docker` and `docker-compose` formulae are just the CLI client and
+# the compose plugin; they talk to whatever engine Colima brings up.
+if command -v colima &>/dev/null; then
+    echo "Colima already installed, skipping."
+else
+    brew install docker docker-compose colima
+fi
+echo "Docker is ready. Each user runs 'colima start' once per login session to"
+echo "bring up the daemon, then 'docker' and 'docker compose' work normally."
+
 # Install my favorite tools
 brew install git
 brew install autojump

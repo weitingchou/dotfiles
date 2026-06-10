@@ -51,6 +51,9 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - **macOS:** the admin's Homebrew at `/opt/homebrew` is put on every account's
   `PATH` system-wide via `/etc/paths.d/homebrew`, so all brew-installed tools are
   visible automatically — no per-user PATH setup needed.
+- **Docker** works per-user: once an admin has installed Colima, the sandbox
+  user just runs `colima start` to bring up its own daemon (no sudo, no shared
+  socket), then `docker` and `docker compose` work as usual.
 - The only thing a non-admin gives up is **installing/updating packages**
   (`brew install`, `apt-get`). Run those from an admin account and they're
   immediately available to the sandbox user.
@@ -75,6 +78,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - GNU core utilities, `wget`, `vim`, `zsh`, `git`, `tmux`, `tree`, `ctags`, `cscope`, `autojump`, `the_silver_searcher`
 - GitHub CLI (`gh`)
 - AWS CLI (`awscli`)
+- Docker CLI + Compose + Colima (container runtime; run `colima start` per user)
 
 ### Both platforms (`install_dotfiles.sh`)
 - oh-my-zsh + plugins: `zsh-autosuggestions`, `zsh-syntax-highlighting`
@@ -96,6 +100,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 | Pyright | Python LSP for Neovim |
 | AWS CLI v2 | AWS access |
 | gh | GitHub CLI |
+| Docker + Colima | Containers (macOS); `colima start` brings up a per-user daemon |
 | Claude Code | AI coding assistant |
 
 ## After Installing

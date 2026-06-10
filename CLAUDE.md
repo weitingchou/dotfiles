@@ -69,6 +69,11 @@ self-`chsh` attempt) and the Ubuntu-desktop WezTerm apt install.
   - WezTerm installed via the official apt repo, gated on `PLATFORM_TYPE = desktop`
 - **Node**: managed via nvm (LTS)
 - **Python**: system python3; pyright installed globally via npm
+- **Containers** (macOS): Docker CLI + Compose + Colima (`brew install docker
+  docker-compose colima`). Colima runs a per-user Linux VM, so every account
+  (including a non-admin sandbox user) runs its own daemon via `colima start` —
+  no shared daemon, no sudo at runtime. The `docker`/`docker-compose` formulae
+  are just the client + compose plugin talking to Colima's engine.
 
 ## Dotfile Conventions
 
