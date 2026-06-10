@@ -104,9 +104,13 @@ esac
 umask g-w,o-w
 
 info "${BLUE}Cloning dotfiles...${NORMAL}\n"
-REPODIR="/tmp/dotfiles"
+# Per-user temp dir. A shared, fixed path like /tmp/dotfiles breaks on a
+# multi-user machine: /tmp has the sticky bit, so a second account (e.g. a
+# non-admin sandbox user) can't delete a clone left by the first and the install
+# fails with "Permission denied". Namespacing by UID gives each account its own.
+REPODIR="${TMPDIR:-/tmp}/dotfiles-$(id -u)"
 if [ -d "$REPODIR" ]; then # Delete the repodir if exists
-  rm -rf $REPODIR
+  rm -rf "$REPODIR"
 fi
 hash git >/dev/null 2>&1 || fail "Error: git clone of dotfiles repo failed"
 env git clone --depth=1 https://github.com/weitingchou/dotfiles.git $REPODIR || fail "Error: git clone of dotfiles repo failed"
