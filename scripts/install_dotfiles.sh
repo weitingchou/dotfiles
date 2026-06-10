@@ -176,6 +176,23 @@ if [ "$OSTYPE" = "macos" ]; then
   success "iTerm2 will load prefs from $ITERM_PREFS_DIR (restart iTerm2 to apply)."
 fi
 
+# WezTerm is the advanced GUI terminal for Ubuntu desktop (the macOS analog is
+# iTerm2, configured above). Only meaningful with a GUI, so skip on servers.
+# The shared .wezterm.lua rsynced to $HOME above is read once WezTerm exists.
+if [ "$OSTYPE" = "ubuntu" ] && [ "$PLATFORM_TYPE" = "desktop" ]; then
+  if command -v wezterm >/dev/null 2>&1; then
+    success "WezTerm already installed, skipping."
+  else
+    info "${BLUE}Installing WezTerm (Ubuntu desktop terminal)...${NORMAL}"
+    # Official WezTerm apt repo (Gemfury). Distribution and component are both '*'.
+    curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+    sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
+    echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install -y wezterm
+  fi
+fi
+
 info "${BLUE}Installing vim-plug for Vim...${NORMAL}"
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim

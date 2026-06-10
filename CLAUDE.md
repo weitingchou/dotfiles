@@ -46,6 +46,9 @@ This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
   - Treesitter for syntax
 - **Vim** (fallback): same `.vimrc`, uses python-mode + jedi-vim instead of LSP
 - **Terminal multiplexer**: tmux (prefix: `C-a`)
+- **Terminal emulator**: iTerm2 (macOS), WezTerm (Ubuntu desktop only)
+  - Shared `.wezterm.lua` synced to `$HOME`; Solarized Dark to match the iTerm2 look
+  - WezTerm installed via the official apt repo, gated on `PLATFORM_TYPE = desktop`
 - **Node**: managed via nvm (LTS)
 - **Python**: system python3; pyright installed globally via npm
 
