@@ -97,7 +97,8 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
 ## Dotfile Conventions
 
 - Files at repo root are synced to `$HOME` via `rsync` (see `install_dotfiles.sh`)
-- `.macos`, `bin/`, `init/`, `scripts/`, `bootstrap.sh` are excluded from the rsync
+- `.macos`, `bin/`, `init/`, `scripts/`, `docs/`, `bootstrap.sh` are excluded from the rsync
+- `docs/` holds repo-only runbooks (e.g. `docs/remote-access-setup.md`), not synced to `$HOME`
 - `init/oh-my-zsh/custom/*` → `~/.oh-my-zsh/custom/`
 - `init/oh-my-zsh/themes/*` → `~/.oh-my-zsh/themes/`
 - `init/iterm2/com.googlecode.iterm2.plist` → `~/.config/iterm2/` (macOS only); install

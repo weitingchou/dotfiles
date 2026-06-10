@@ -173,6 +173,7 @@ rsync --exclude ".git/" \
   --exclude "bin/" \
   --exclude "init/" \
   --exclude "scripts/" \
+  --exclude "docs/" \
   --exclude "bootstrap.sh" \
   --exclude "README.md" \
   --exclude "LICENSE-MIT.txt" \
