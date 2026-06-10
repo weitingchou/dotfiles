@@ -189,6 +189,19 @@ if [ "$OSTYPE" = "macos" ]; then
   mkdir -p "$ITERM_DYNAMIC_DIR"
   cp "$REPODIR"/init/iterm2/DynamicProfiles/*.json "$ITERM_DYNAMIC_DIR/"
   success "iTerm2 will load prefs from $ITERM_PREFS_DIR (restart iTerm2 to apply)."
+
+  # Homebrew installs the Docker Compose plugin under its own prefix, which the
+  # Docker CLI does not search by default — so `docker compose` (subcommand)
+  # would not resolve. Symlink it into the per-user plugin dir to fix that. This
+  # is per-user, so every account (incl. a non-admin sandbox user) gets it once
+  # the shared `docker-compose` formula is installed by an admin. No-ops if the
+  # plugin isn't present yet.
+  COMPOSE_PLUGIN="$(brew --prefix 2>/dev/null)/lib/docker/cli-plugins/docker-compose"
+  if [ -x "$COMPOSE_PLUGIN" ]; then
+    mkdir -p "$HOME/.docker/cli-plugins"
+    ln -sf "$COMPOSE_PLUGIN" "$HOME/.docker/cli-plugins/docker-compose"
+    success "Linked Docker Compose plugin into ~/.docker/cli-plugins (docker compose works)."
+  fi
 fi
 
 # WezTerm is the advanced GUI terminal for Ubuntu desktop (the macOS analog is
