@@ -9,6 +9,12 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="$HOME/.local/bin:$PATH"
 
+# Go tools installed via `go install` land in $GOPATH/bin (default ~/go/bin).
+export PATH="$HOME/go/bin:$PATH"
+
+# Rust toolchain (rustup) — adds ~/.cargo/bin to PATH when present.
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 

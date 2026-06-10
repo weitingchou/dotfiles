@@ -246,6 +246,30 @@ nvm install --lts
 info "${BLUE}Installing pyright (Python LSP for Neovim)...${NORMAL}"
 npm install -g pyright
 
+# Rust toolchain via rustup. rustup is a PER-USER installer (everything lands in
+# ~/.rustup and ~/.cargo), so this needs no admin and works the same on a
+# non-admin sandbox account. --no-modify-path: PATH is handled by .zshrc, which
+# sources ~/.cargo/env.
+info "${BLUE}Installing Rust toolchain via rustup...${NORMAL}"
+if command -v rustup >/dev/null 2>&1 || [ -x "$HOME/.cargo/bin/rustup" ]; then
+  success "rustup already installed, skipping."
+else
+  curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path
+fi
+
+# Go developer tools (gopls = LSP for Neovim, golangci-lint = linter). These
+# install per-user into $GOPATH/bin (~/go/bin) via `go install`, so no admin is
+# needed — but they require the shared Go toolchain, which an admin installs via
+# the platform script. Skip with a note if `go` isn't on PATH yet.
+if command -v go >/dev/null 2>&1; then
+  info "${BLUE}Installing Go tools (gopls, golangci-lint)...${NORMAL}"
+  go install golang.org/x/tools/gopls@latest
+  go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+  success "Go tools installed into $(go env GOBIN 2>/dev/null || echo "$(go env GOPATH)/bin")."
+else
+  user "Go is not installed — skipping gopls/golangci-lint. Ask an admin to run 'brew install go', then re-run this installer."
+fi
+
 info "${BLUE}Installing Claude Code CLI...${NORMAL}"
 curl -fsSL https://claude.ai/install.sh | bash
 

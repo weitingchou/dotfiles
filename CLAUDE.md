@@ -69,6 +69,13 @@ self-`chsh` attempt) and the Ubuntu-desktop WezTerm apt install.
   - WezTerm installed via the official apt repo, gated on `PLATFORM_TYPE = desktop`
 - **Node**: managed via nvm (LTS)
 - **Python**: system python3; pyright installed globally via npm
+- **Go** (macOS): toolchain via `brew install go` (admin/shared). Deps and tools
+  are per-user — `go get`/`go mod` → `~/go/pkg/mod`, `go install` → `~/go/bin`
+  (on PATH via `.zshrc`). `gopls` + `golangci-lint` installed per-user in
+  `install_dotfiles.sh`; `gopls` is wired into the nvim native LSP in `.vimrc`.
+- **Rust**: `rustup` (per-user, `~/.rustup`/`~/.cargo`) installed in
+  `install_dotfiles.sh` — needs no admin, so a non-admin sandbox can install it.
+  `.zshrc` sources `~/.cargo/env`.
 - **Containers** (macOS): Docker CLI + Compose + Colima (`brew install docker
   docker-compose colima`). Colima runs a per-user Linux VM, so every account
   (including a non-admin sandbox user) runs its own daemon via `colima start` —

@@ -128,6 +128,17 @@ brew install cscope
 # don't `pip install --upgrade` against it globally — use a venv instead.
 brew install python3
 
+# Install the Go toolchain. This is the only admin-gated part of Go development:
+# once `go` is on the shared PATH, every account (incl. a non-admin sandbox user)
+# can fetch modules (`go get`/`go mod`), install tools (`go install` -> ~/go/bin),
+# and build — all per-user under $HOME, no sudo. Go 1.21+ also auto-downloads
+# newer toolchain versions named in a project's go.mod into the per-user cache.
+if command -v go &>/dev/null; then
+    echo "Go already installed, skipping."
+else
+    brew install go
+fi
+
 # Remove outdated versions from the cellar.
 brew cleanup
 

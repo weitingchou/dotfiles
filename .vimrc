@@ -166,6 +166,21 @@ vim.lsp.config['pyright'] = {
 }
 vim.lsp.enable('pyright')
 
+-- gopls LSP (Go). Installed per-user via `go install` -> ~/go/bin during setup.
+vim.lsp.config['gopls'] = {
+    cmd = { 'gopls' },
+    filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+    root_markers = { 'go.work', 'go.mod', '.git' },
+    capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities() or nil,
+    settings = {
+        gopls = {
+            analyses = { unusedparams = true },
+            staticcheck = true,
+        },
+    },
+}
+vim.lsp.enable('gopls')
+
 -- LSP key mappings
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', 'gd',         vim.lsp.buf.definition,   opts)  -- Go to definition

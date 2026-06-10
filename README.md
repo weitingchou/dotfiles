@@ -56,7 +56,14 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
   VM profile) to bring up its own daemon — no sudo, no shared socket — then
   `docker` and `docker compose` work as usual. `dkdown` stops the VM. The VM
   size is set by `COLIMA_CPU`/`COLIMA_MEMORY`/`COLIMA_DISK` in `aliases.zsh`.
-- The only thing a non-admin gives up is **installing/updating packages**
+- **Project dependencies work without admin.** Language package managers install
+  into `$HOME`, so the sandbox user can fully develop: `go get`/`go mod`
+  (`~/go`), `npm install` (its own `~/.nvm`), `pip` inside a `venv`, `cargo`
+  (`~/.cargo`). Only the **toolchains** (`go`, `node`, `python`) are admin-gated,
+  and an admin installs those once via the platform script — they're then shared
+  on PATH. (Rust is the exception: `rustup` is per-user, so the sandbox can even
+  install the toolchain itself.)
+- The only thing a non-admin gives up is **installing/updating system packages**
   (`brew install`, `apt-get`). Run those from an admin account and they're
   immediately available to the sandbox user.
 
@@ -81,6 +88,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - GitHub CLI (`gh`)
 - AWS CLI (`awscli`)
 - Docker CLI + Compose + Colima (container runtime; run `colima start` per user)
+- Go toolchain (`go`) — language deps install per-user under `~/go`, no admin
 
 ### Both platforms (`install_dotfiles.sh`)
 - oh-my-zsh + plugins: `zsh-autosuggestions`, `zsh-syntax-highlighting`
@@ -88,6 +96,8 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - vim-plug (for Vim and Neovim)
 - nvm + Node.js LTS
 - Pyright (Python LSP, installed globally via npm)
+- Rust toolchain via rustup (per-user; `~/.rustup`, `~/.cargo`)
+- Go tools: `gopls` (LSP) + `golangci-lint` (per-user, `~/go/bin`; needs Go installed)
 - Claude Code CLI
 
 ## Key Tools
