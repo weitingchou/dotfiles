@@ -346,4 +346,20 @@ fi
 success "Installation completed without errors."
 success "Open Neovim and run :PlugInstall if any plugins are missing."
 success "Log out and log back in (or open a new login shell) for zsh to become the default shell."
+
+# Reminder of the interactive/auth steps the installer intentionally left for you
+# to run by hand (they can't be scripted unattended).
+echo ''
+echo "${BOLD}== Manual steps to finish setup ==${NORMAL}"
+echo "  - Configure Hermes Agent (LLM provider):  hermes setup"
+if [ "${DOTFILES_USER_ONLY:-0}" != "1" ]; then
+  if [ "$OSTYPE" = "macos" ]; then
+    echo "  - Connect this machine to Tailscale (admin, one-time):"
+    echo "      sudo tailscaled install-system-daemon && sudo tailscale up"
+  elif [ "$OSTYPE" = "ubuntu" ]; then
+    echo "  - Connect this machine to Tailscale (admin, one-time):  sudo tailscale up"
+  fi
+fi
+echo ''
+
 env zsh
