@@ -279,12 +279,14 @@ curl -fsSL https://claude.ai/install.sh | bash
 
 info "${BLUE}Installing Hermes Agent...${NORMAL}"
 # Hermes Agent (Nous Research) CLI. Only Git is required (present by now); the
-# installer pulls in its own Python/Node/ripgrep/ffmpeg. Run `hermes setup` after
-# install to configure an LLM provider.
+# installer pulls in its own Python/Node/ripgrep/ffmpeg. --skip-setup skips the
+# interactive setup wizard so the install runs unattended; with no API keys
+# configured the gateway stage also self-skips. Run `hermes setup` manually
+# afterwards to configure an LLM provider.
 if command -v hermes >/dev/null 2>&1; then
   success "Hermes Agent already installed, skipping."
 else
-  curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+  curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --skip-setup
 fi
 
 info "${BLUE}Installing Neovim plugins...${NORMAL}"
