@@ -52,8 +52,10 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
   `PATH` system-wide via `/etc/paths.d/homebrew`, so all brew-installed tools are
   visible automatically — no per-user PATH setup needed.
 - **Docker** works per-user: once an admin has installed Colima, the sandbox
-  user just runs `colima start` to bring up its own daemon (no sudo, no shared
-  socket), then `docker` and `docker compose` work as usual.
+  user just runs `dkup` (a helper aliased to `colima start` with a default dev
+  VM profile) to bring up its own daemon — no sudo, no shared socket — then
+  `docker` and `docker compose` work as usual. `dkdown` stops the VM. The VM
+  size is set by `COLIMA_CPU`/`COLIMA_MEMORY`/`COLIMA_DISK` in `aliases.zsh`.
 - The only thing a non-admin gives up is **installing/updating packages**
   (`brew install`, `apt-get`). Run those from an admin account and they're
   immediately available to the sandbox user.

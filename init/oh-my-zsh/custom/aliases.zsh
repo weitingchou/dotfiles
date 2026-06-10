@@ -68,4 +68,38 @@ alias reload="exec $SHELL -l"
 # Claude with custom kubeconfig
 alias claude="KUBECONFIG=$HOME/.kube/claude-config CLAUDE_TELEMETRY=disabled claude"
 
+# ── Docker / Colima (macOS) ───────────────────────────────────────────────
+# macOS has no native container engine; Colima runs a per-user Linux VM. These
+# helpers give the account a one-command, idempotent start with a default dev
+# profile. (Compose command aliases like `dco`, `dcup`, `dcdn` already come from
+# the oh-my-zsh docker-compose plugin.)
+if [ $OSTYPE = "Darwin" ]; then
+    # Default VM profile. This box is dedicated to the agent (sandbox) user for
+    # development, so the VM gets the lion's share; the remainder is left for
+    # macOS + host-side tooling (Claude Code, node, nvim, builds). Colima applies
+    # these on (re)start — bump a value and re-run `dkup` to resize. The disk is
+    # sparse: it grows on demand and does not reserve the full size up front.
+    export COLIMA_CPU=8        # of 10 cores  (leave 2 for the host)
+    export COLIMA_MEMORY=10    # of 16 GB     (leave ~6 GB for macOS + host tools)
+    export COLIMA_DISK=100     # GB           (sparse)
+
+    # Start the daemon only if it isn't already up; safe to run repeatedly.
+    function dkup() {
+        if colima status >/dev/null 2>&1; then
+            colima status
+        else
+            colima start \
+                --cpu "$COLIMA_CPU" --memory "$COLIMA_MEMORY" --disk "$COLIMA_DISK" \
+                --vm-type vz --mount-type virtiofs
+            #     └ Apple Virtualization.framework + fast virtiofs file sharing.
+            # To also run x86/amd64 images, install Rosetta once (an admin runs:
+            #   softwareupdate --install-rosetta --agree-to-license) then add
+            #   --vz-rosetta to the line above.
+        fi
+    }
+
+    alias dkdown='colima stop'      # reclaim CPU/RAM when done for the session
+    alias dkstatus='colima status'
+fi
+
 unset OSTYPE
