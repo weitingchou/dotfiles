@@ -208,6 +208,24 @@ if [ "$OSTYPE" = "macos" ]; then
   fi
 fi
 
+# Headless-server power policy (macOS, server platform only). For a box you SSH
+# into, the machine must not system-sleep (sshd stops accepting connections while
+# asleep) and should power back on after an outage. pmset is admin-only, so this
+# runs in the full (admin) install; the sudo-free user-only path can't change it
+# and instead prints a note for an admin. Reverse with: sudo pmset -a sleep 1 autorestart 0.
+if [ "$OSTYPE" = "macos" ] && [ "$PLATFORM_TYPE" = "server" ]; then
+  if [ "${DOTFILES_USER_ONLY:-0}" = "1" ]; then
+    user "Power settings need admin. Ask an admin to run: sudo pmset -a sleep 0 autorestart 1"
+  else
+    info "${BLUE}Configuring headless power policy (never sleep, auto-restart)...${NORMAL}"
+    if sudo pmset -a sleep 0 autorestart 1; then
+      success "Power: system sleep disabled, auto-restart after power failure enabled."
+    else
+      user "Could not set power policy. Run manually: sudo pmset -a sleep 0 autorestart 1"
+    fi
+  fi
+fi
+
 # WezTerm is the advanced GUI terminal for Ubuntu desktop (the macOS analog is
 # iTerm2, configured above). Only meaningful with a GUI, so skip on servers.
 # The shared .wezterm.lua rsynced to $HOME above is read once WezTerm exists.

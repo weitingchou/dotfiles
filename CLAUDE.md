@@ -50,9 +50,15 @@ toolchain automatically — only `brew install`/`apt-get` are unavailable to the
 `install_user.sh` preflights for the shared tools and stops early if an admin
 hasn't run the full install yet.
 
-`DOTFILES_USER_ONLY=1` makes `install_dotfiles.sh` skip its only two `sudo`
-callers: the `chsh`/`/etc/shells` shell change (replaced with a sudo-free
-self-`chsh` attempt) and the Ubuntu-desktop WezTerm apt install.
+`DOTFILES_USER_ONLY=1` makes `install_dotfiles.sh` skip its `sudo` callers: the
+`chsh`/`/etc/shells` shell change (replaced with a sudo-free self-`chsh`
+attempt), the Ubuntu-desktop WezTerm apt install, and the macOS headless-server
+power policy. Each prints a note telling an admin what to run instead.
+
+On macOS with `PLATFORM_TYPE = server`, the admin install also applies a
+headless power policy via `sudo pmset -a sleep 0 autorestart 1` — never
+system-sleep (so sshd stays reachable) and auto-restart after a power outage.
+Reverse with `sudo pmset -a sleep 1 autorestart 0`.
 
 ## Key Tool Choices
 
