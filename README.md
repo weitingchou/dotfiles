@@ -26,6 +26,39 @@ This runs: `bootstrap.sh` → `install_macos.sh` → `install_dotfiles.sh`
 
 > **Note:** `install_dotfiles.sh` clones this repo from GitHub, so changes must be pushed before running on a new machine.
 
+### User-only (non-admin accounts)
+
+For a **non-admin** account — e.g. a sandbox user used to run agents or for
+isolated development — run the user-only installer instead. It sets up
+everything under `$HOME` and **never calls `sudo`**:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_user.sh)"
+```
+
+This runs: `install_user.sh` → `install_dotfiles.sh` (with `DOTFILES_USER_ONLY=1`)
+
+It installs only the per-user pieces (dotfiles, oh-my-zsh + plugins,
+Powerlevel10k, vim-plug, nvm + Node, Pyright, Claude Code, Hermes, SSH key, and
+on macOS the iTerm2 profile). It does **not** install system packages — those
+are shared and must already be installed by an admin via the platform script
+above. The installer preflights for the shared toolchain and stops early with
+instructions if it's missing.
+
+**Same experience as admin.** System packages are installed once by an admin and
+shared with every account, so a non-admin gets the identical CLI toolchain:
+
+- **macOS:** the admin's Homebrew at `/opt/homebrew` is put on every account's
+  `PATH` system-wide via `/etc/paths.d/homebrew`, so all brew-installed tools are
+  visible automatically — no per-user PATH setup needed.
+- The only thing a non-admin gives up is **installing/updating packages**
+  (`brew install`, `apt-get`). Run those from an admin account and they're
+  immediately available to the sandbox user.
+
+> If the sandbox account's login shell isn't already `zsh`, the user-only
+> installer can't change it without sudo. macOS accounts default to `/bin/zsh`,
+> so this is normally a no-op; otherwise an admin runs `sudo chsh -s /bin/zsh <user>`.
+
 ## What Gets Installed
 
 ### Ubuntu (`install_ubuntu.sh`)

@@ -116,13 +116,28 @@ command -v zsh > /dev/null 2>&1 || fail "${YELLOW}Zsh is not installed!${NORMAL}
 version_gte "$(zsh --version | cut -d' ' -f 2)" "4.3.9" || fail "zsh version should be v4.3.9 or more"
 
 info "${BLUE}Making default shell to zsh...${NORMAL}"
-if [ "$SHELL" = "$(which zsh)" ]; then
+ZSH_PATH="$(command -v zsh)"
+if [ "$SHELL" = "$ZSH_PATH" ]; then
   success "Default shell is already zsh, skipping."
-else
-  if [ ! $(grep "$(which zsh)" /etc/shells | wc -l) -ge 1 ]; then
-    echo "$(which zsh)" | sudo tee -a /etc/shells
+elif [ "${DOTFILES_USER_ONLY:-0}" = "1" ]; then
+  # Non-admin (user-only) install: never call sudo. A user may change their OWN
+  # login shell with chsh, but only to a shell already listed in /etc/shells
+  # (only an admin can add one there). On macOS /bin/zsh is already the default
+  # and listed, so this branch is normally a no-op.
+  if grep -q "^$ZSH_PATH$" /etc/shells; then
+    if chsh -s "$ZSH_PATH" >/dev/null 2>&1; then
+      success "Default shell changed to zsh."
+    else
+      user "Could not change login shell automatically. Ask an admin to run: sudo chsh -s $ZSH_PATH $USER"
+    fi
+  else
+    user "$ZSH_PATH is not in /etc/shells. Ask an admin to add it, then run: sudo chsh -s $ZSH_PATH $USER"
   fi
-  sudo chsh -s $(which zsh) $USER
+else
+  if [ ! $(grep "$ZSH_PATH" /etc/shells | wc -l) -ge 1 ]; then
+    echo "$ZSH_PATH" | sudo tee -a /etc/shells
+  fi
+  sudo chsh -s "$ZSH_PATH" $USER
 fi
 
 info "${BLUE}Installing oh-my-zsh...${NORMAL}"
@@ -180,7 +195,9 @@ fi
 # iTerm2, configured above). Only meaningful with a GUI, so skip on servers.
 # The shared .wezterm.lua rsynced to $HOME above is read once WezTerm exists.
 if [ "$OSTYPE" = "ubuntu" ] && [ "$PLATFORM_TYPE" = "desktop" ]; then
-  if command -v wezterm >/dev/null 2>&1; then
+  if [ "${DOTFILES_USER_ONLY:-0}" = "1" ]; then
+    user "Skipping WezTerm install (system package, needs sudo). Ask an admin to install it."
+  elif command -v wezterm >/dev/null 2>&1; then
     success "WezTerm already installed, skipping."
   else
     info "${BLUE}Installing WezTerm (Ubuntu desktop terminal)...${NORMAL}"

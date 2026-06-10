@@ -36,6 +36,24 @@ This runs: `bootstrap.sh` → `install_ubuntu.sh` → `install_dotfiles.sh`
 
 `install_dotfiles.sh` clones the repo from GitHub, so **changes must be pushed to GitHub before running on a new machine**.
 
+**On a non-admin account (e.g. an agent-sandbox user):**
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_user.sh)"
+```
+
+This runs: `install_user.sh` → `install_dotfiles.sh` with `DOTFILES_USER_ONLY=1`,
+which takes a **sudo-free** path: only `$HOME`-scoped setup, no system packages.
+System packages are installed once by an admin (via the platform script) and
+shared. On macOS, the admin's Homebrew at `/opt/homebrew` is on every account's
+`PATH` via `/etc/paths.d/homebrew`, so a non-admin user gets the same CLI
+toolchain automatically — only `brew install`/`apt-get` are unavailable to them.
+`install_user.sh` preflights for the shared tools and stops early if an admin
+hasn't run the full install yet.
+
+`DOTFILES_USER_ONLY=1` makes `install_dotfiles.sh` skip its only two `sudo`
+callers: the `chsh`/`/etc/shells` shell change (replaced with a sudo-free
+self-`chsh` attempt) and the Ubuntu-desktop WezTerm apt install.
+
 ## Key Tool Choices
 
 - **Shell**: zsh + oh-my-zsh
