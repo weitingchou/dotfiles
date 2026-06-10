@@ -139,6 +139,22 @@ else
     brew install go
 fi
 
+# Install Tailscale (WireGuard mesh VPN) for secure remote access across networks
+# without opening any router ports. Use the CLI formula (not the GUI cask) so it
+# can run headless as a system daemon — right for a Mac you SSH into. Tailscale is
+# a MACHINE-LEVEL service: one tunnel for the whole box, shared by every account,
+# so it's set up here in the admin install. After install, an admin connects it
+# once (interactive, so not scripted):
+#   sudo tailscaled install-system-daemon   # run at boot, no login session needed
+#   sudo tailscale up                        # sign in (opens a browser URL)
+if command -v tailscale &>/dev/null; then
+    echo "Tailscale already installed, skipping."
+else
+    brew install tailscale
+fi
+echo "Tailscale installed. To connect this machine (admin, one-time):"
+echo "  sudo tailscaled install-system-daemon && sudo tailscale up"
+
 # Remove outdated versions from the cellar.
 brew cleanup
 

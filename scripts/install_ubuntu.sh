@@ -101,4 +101,16 @@ else
     sudo apt-get install -y neovim
 fi
 
+# Tailscale (WireGuard mesh VPN) — secure remote access across networks without
+# opening any ports. The official installer sets up the apt repo and enables
+# tailscaled as a systemd service (starts at boot, headless-friendly). Connecting
+# is interactive, so an admin runs `sudo tailscale up` once afterwards.
+if command -v tailscale &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] Tailscale already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing Tailscale...\n"
+    curl -fsSL https://tailscale.com/install.sh | sh
+fi
+printf "\r  [ \033[00;34m..\033[0m ] Tailscale installed. Connect with: sudo tailscale up\n"
+
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"

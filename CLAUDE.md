@@ -82,6 +82,12 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
 - **Rust**: `rustup` (per-user, `~/.rustup`/`~/.cargo`) installed in
   `install_dotfiles.sh` — needs no admin, so a non-admin sandbox can install it.
   `.zshrc` sources `~/.cargo/env`.
+- **Remote access**: Tailscale (WireGuard mesh VPN). Installed in the admin
+  platform scripts (`brew install tailscale` on macOS — CLI formula, not the GUI
+  cask, so it runs headless as a system daemon; official installer on Ubuntu).
+  Machine-level (one tunnel for the whole box, shared by all accounts), so an
+  admin connects it once: `sudo tailscaled install-system-daemon` (macOS) then
+  `sudo tailscale up`. Reach the box at its tailnet name and log in as any user.
 - **Containers** (macOS): Docker CLI + Compose + Colima (`brew install docker
   docker-compose colima`). Colima runs a per-user Linux VM, so every account
   (including a non-admin sandbox user) runs its own daemon via `colima start` —

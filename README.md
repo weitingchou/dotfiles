@@ -81,6 +81,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - GitHub CLI (`gh`)
 - AWS CLI v2
 - Neovim (latest, via unstable PPA)
+- Tailscale (mesh VPN; connect with `sudo tailscale up`)
 
 ### macOS (`install_macos.sh`)
 - Homebrew
@@ -89,6 +90,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - AWS CLI (`awscli`)
 - Docker CLI + Compose + Colima (container runtime; run `colima start` per user)
 - Go toolchain (`go`) — language deps install per-user under `~/go`, no admin
+- Tailscale (mesh VPN, CLI formula; headless system daemon for remote SSH)
 
 ### Both platforms (`install_dotfiles.sh`)
 - oh-my-zsh + plugins: `zsh-autosuggestions`, `zsh-syntax-highlighting`
@@ -113,6 +115,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 | AWS CLI v2 | AWS access |
 | gh | GitHub CLI |
 | Docker + Colima | Containers (macOS); `colima start` brings up a per-user daemon |
+| Tailscale | Mesh VPN for secure remote access (machine-level; `sudo tailscale up`) |
 | Claude Code | AI coding assistant |
 
 ## After Installing
