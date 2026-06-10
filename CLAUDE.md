@@ -55,10 +55,10 @@ hasn't run the full install yet.
 attempt), the Ubuntu-desktop WezTerm apt install, and the macOS headless-server
 power policy. Each prints a note telling an admin what to run instead.
 
-On macOS with `PLATFORM_TYPE = server`, the admin install also applies a
-headless power policy via `sudo pmset -a sleep 0 autorestart 1` — never
-system-sleep (so sshd stays reachable) and auto-restart after a power outage.
-Reverse with `sudo pmset -a sleep 1 autorestart 0`.
+On macOS, the admin install *prompts* whether to apply a headless power policy
+via `sudo pmset -a sleep 0 autorestart 1` — never system-sleep (so sshd stays
+reachable) and auto-restart after a power outage. The prompt defaults to yes when
+`PLATFORM_TYPE = server`, no otherwise. Reverse with `sudo pmset -a sleep 1 autorestart 0`.
 
 ## Key Tool Choices
 

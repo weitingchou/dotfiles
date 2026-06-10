@@ -208,20 +208,29 @@ if [ "$OSTYPE" = "macos" ]; then
   fi
 fi
 
-# Headless-server power policy (macOS, server platform only). For a box you SSH
-# into, the machine must not system-sleep (sshd stops accepting connections while
-# asleep) and should power back on after an outage. pmset is admin-only, so this
-# runs in the full (admin) install; the sudo-free user-only path can't change it
-# and instead prints a note for an admin. Reverse with: sudo pmset -a sleep 1 autorestart 0.
-if [ "$OSTYPE" = "macos" ] && [ "$PLATFORM_TYPE" = "server" ]; then
+# Headless-server power policy (macOS). For a box you SSH into, the machine must
+# not system-sleep (sshd stops accepting connections while asleep) and should
+# power back on after an outage. pmset is admin-only, so the sudo-free user-only
+# path can't change it and just prints a note; the admin install asks first
+# (defaulting to yes on a server). Reverse with: sudo pmset -a sleep 1 autorestart 0.
+if [ "$OSTYPE" = "macos" ]; then
   if [ "${DOTFILES_USER_ONLY:-0}" = "1" ]; then
-    user "Power settings need admin. Ask an admin to run: sudo pmset -a sleep 0 autorestart 1"
+    user "To keep this machine reachable over SSH, an admin can apply a headless power policy: sudo pmset -a sleep 0 autorestart 1"
   else
-    info "${BLUE}Configuring headless power policy (never sleep, auto-restart)...${NORMAL}"
-    if sudo pmset -a sleep 0 autorestart 1; then
-      success "Power: system sleep disabled, auto-restart after power failure enabled."
+    # Default to yes for a server platform, no otherwise.
+    if [ "$PLATFORM_TYPE" = "server" ]; then PWR_DEFAULT="Y"; PWR_HINT="[Y/n]"; else PWR_DEFAULT="N"; PWR_HINT="[y/N]"; fi
+    read -p "Enable headless power policy (never sleep + auto-restart after power loss)? Recommended for an always-on server. $PWR_HINT "
+    echo ''
+    REPLY="${REPLY:-$PWR_DEFAULT}"
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      info "${BLUE}Configuring headless power policy (never sleep, auto-restart)...${NORMAL}"
+      if sudo pmset -a sleep 0 autorestart 1; then
+        success "Power: system sleep disabled, auto-restart after power failure enabled."
+      else
+        user "Could not set power policy. Run manually: sudo pmset -a sleep 0 autorestart 1"
+      fi
     else
-      user "Could not set power policy. Run manually: sudo pmset -a sleep 0 autorestart 1"
+      info "Skipping power policy. Apply later with: sudo pmset -a sleep 0 autorestart 1"
     fi
   fi
 fi
