@@ -139,6 +139,15 @@ else
     brew install go
 fi
 
+# Install Terraform (HashiCorp IaC). Terraform's BUSL license got it removed from
+# homebrew-core, so it lives in HashiCorp's own tap, not the default formulae.
+if command -v terraform &>/dev/null; then
+    echo "Terraform already installed, skipping."
+else
+    brew tap hashicorp/tap
+    brew install hashicorp/tap/terraform
+fi
+
 # Install Tailscale (WireGuard mesh VPN) for secure remote access across networks
 # without opening any router ports. Use the CLI formula (not the GUI cask) so it
 # can run headless as a system daemon — right for a Mac you SSH into. Tailscale is

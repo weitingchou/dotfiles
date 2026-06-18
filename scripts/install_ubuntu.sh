@@ -91,6 +91,19 @@ else
     sudo mv /tmp/eksctl /usr/local/bin
 fi
 
+# Terraform (HashiCorp IaC) — installed from HashiCorp's official apt repo.
+if command -v terraform &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] Terraform already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing Terraform...\n"
+    sudo mkdir -p -m 755 /etc/apt/keyrings
+    wget -qO- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+    sudo chmod go+r /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install -y terraform
+fi
+
 # Neovim (0.11+ required for native LSP API - use unstable PPA)
 if command -v nvim &>/dev/null; then
     printf "\r  [ \033[00;32mok\033[0m ] Neovim already installed, skipping.\n"

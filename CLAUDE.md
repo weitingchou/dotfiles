@@ -93,6 +93,9 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
   `wsl --shutdown`) for a durable fix, or start the daemon by hand
   (`sudo tailscaled > /dev/null 2>&1 &`) before `sudo tailscale up`. See
   `docs/remote-access-setup.md`.
+- **Terraform** (IaC): installed in both admin platform scripts. macOS uses
+  HashiCorp's tap (`brew install hashicorp/tap/terraform`) — the BUSL relicense
+  removed it from homebrew-core; Ubuntu uses HashiCorp's official apt repo.
 - **Containers** (macOS): Docker CLI + Compose + Colima (`brew install docker
   docker-compose colima`). Colima runs a per-user Linux VM, so every account
   (including a non-admin sandbox user) runs its own daemon via `colima start` —
