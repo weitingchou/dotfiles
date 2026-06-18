@@ -34,9 +34,18 @@ LAN and across networks via Tailscale.
       `curl -fsSL https://tailscale.com/install.sh | sh`
 - [ ] **If this Ubuntu runs under WSL** (Windows Subsystem for Linux): there's no
       systemd as PID 1, so the `tailscaled` systemd service never starts and
-      `sudo tailscaled install-system-daemon` fails. Start the daemon by hand
-      first: `sudo tailscaled > /dev/null 2>&1 &`. It doesn't survive a
-      `wsl --shutdown`, so re-run it (or enable systemd in `/etc/wsl.conf`).
+      `sudo tailscaled install-system-daemon` fails. Two options:
+      - **Durable (recommended)** — enable systemd in WSL so the service runs at
+        boot like a normal Ubuntu box. Add to `/etc/wsl.conf`:
+        ```ini
+        [boot]
+        systemd=true
+        ```
+        then `wsl --shutdown` from Windows (PowerShell/cmd) once to restart the
+        distro. After that `tailscaled` starts automatically and persists.
+      - **Quick / one-off** — start the daemon by hand:
+        `sudo tailscaled > /dev/null 2>&1 &`. This doesn't survive a
+        `wsl --shutdown`, so re-run it each time.
 - [ ] `sudo tailscale up` — sign in with the **same** Tailscale identity as the mini
 - [ ] **While password auth is still ON**, copy this machine's key to the mini
       over Tailscale (get `<mini>` from `tailscale status`):
