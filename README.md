@@ -80,7 +80,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - Python: `python3`, `pip`, `venv`
 - GitHub CLI (`gh`)
 - AWS CLI v2
-- Terraform (IaC; HashiCorp apt repo)
+- Terraform + terraform-ls (IaC + LSP; HashiCorp apt repo)
 - Neovim (latest, via unstable PPA)
 - Tailscale (mesh VPN; connect with `sudo tailscale up`)
 
@@ -89,7 +89,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - GNU core utilities, `wget`, `vim`, `zsh`, `git`, `tmux`, `tree`, `ctags`, `cscope`, `autojump`, `the_silver_searcher`
 - GitHub CLI (`gh`)
 - AWS CLI (`awscli`)
-- Terraform (IaC; HashiCorp tap)
+- Terraform + terraform-ls (IaC + LSP; HashiCorp tap)
 - Docker CLI + Compose + Colima (container runtime; run `colima start` per user)
 - Go toolchain (`go`) — language deps install per-user under `~/go`, no admin
 - Tailscale (mesh VPN, CLI formula; headless system daemon for remote SSH)

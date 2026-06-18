@@ -96,6 +96,8 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
 - **Terraform** (IaC): installed in both admin platform scripts. macOS uses
   HashiCorp's tap (`brew install hashicorp/tap/terraform`) — the BUSL relicense
   removed it from homebrew-core; Ubuntu uses HashiCorp's official apt repo.
+  `terraform-ls` (the language server) installs from the same tap/repo and is
+  wired into the nvim native LSP in `.vimrc`.
 - **Containers** (macOS): Docker CLI + Compose + Colima (`brew install docker
   docker-compose colima`). Colima runs a per-user Linux VM, so every account
   (including a non-admin sandbox user) runs its own daemon via `colima start` —

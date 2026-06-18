@@ -147,6 +147,12 @@ else
     brew tap hashicorp/tap
     brew install hashicorp/tap/terraform
 fi
+# terraform-ls: Terraform language server, wired into the nvim native LSP (.vimrc).
+if command -v terraform-ls &>/dev/null; then
+    echo "terraform-ls already installed, skipping."
+else
+    brew install hashicorp/tap/terraform-ls
+fi
 
 # Install Tailscale (WireGuard mesh VPN) for secure remote access across networks
 # without opening any router ports. Use the CLI formula (not the GUI cask) so it

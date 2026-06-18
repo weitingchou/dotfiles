@@ -104,6 +104,15 @@ else
     sudo apt-get install -y terraform
 fi
 
+# terraform-ls: Terraform language server, wired into the nvim native LSP (.vimrc).
+# Ships from the same HashiCorp apt repo configured above for terraform.
+if command -v terraform-ls &>/dev/null; then
+    printf "\r  [ \033[00;32mok\033[0m ] terraform-ls already installed, skipping.\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Installing terraform-ls...\n"
+    sudo apt-get install -y terraform-ls
+fi
+
 # Neovim (0.11+ required for native LSP API - use unstable PPA)
 if command -v nvim &>/dev/null; then
     printf "\r  [ \033[00;32mok\033[0m ] Neovim already installed, skipping.\n"

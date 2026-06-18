@@ -181,6 +181,15 @@ vim.lsp.config['gopls'] = {
 }
 vim.lsp.enable('gopls')
 
+-- terraform-ls LSP (Terraform). Installed from HashiCorp's tap/apt repo at setup.
+vim.lsp.config['terraformls'] = {
+    cmd = { 'terraform-ls', 'serve' },
+    filetypes = { 'terraform', 'terraform-vars' },
+    root_markers = { '.terraform', '.git' },
+    capabilities = ok_cmp_lsp and cmp_nvim_lsp.default_capabilities() or nil,
+}
+vim.lsp.enable('terraformls')
+
 -- LSP key mappings
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', 'gd',         vim.lsp.buf.definition,   opts)  -- Go to definition
