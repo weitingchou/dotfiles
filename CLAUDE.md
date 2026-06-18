@@ -88,6 +88,9 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
   Machine-level (one tunnel for the whole box, shared by all accounts), so an
   admin connects it once: `sudo tailscaled install-system-daemon` (macOS) then
   `sudo tailscale up`. Reach the box at its tailnet name and log in as any user.
+  On WSL Ubuntu there's no systemd, so the tailscaled service never starts —
+  start the daemon by hand (`sudo tailscaled > /dev/null 2>&1 &`) before
+  `sudo tailscale up`. See `docs/remote-access-setup.md`.
 - **Containers** (macOS): Docker CLI + Compose + Colima (`brew install docker
   docker-compose colima`). Colima runs a per-user Linux VM, so every account
   (including a non-admin sandbox user) runs its own daemon via `colima start` —

@@ -111,6 +111,16 @@ else
     printf "\r  [ \033[00;34m..\033[0m ] Installing Tailscale...\n"
     curl -fsSL https://tailscale.com/install.sh | sh
 fi
-printf "\r  [ \033[00;34m..\033[0m ] Tailscale installed. Connect with: sudo tailscale up\n"
+# Under WSL there's usually no systemd as PID 1, so the tailscaled systemd service
+# the installer registers never starts. Start the daemon manually instead, then
+# `sudo tailscale up`. (This foreground-less daemon does not survive a WSL restart;
+# re-run it, or enable systemd in /etc/wsl.conf, after each `wsl --shutdown`.)
+if grep -qiE "microsoft|wsl" /proc/sys/kernel/osrelease 2>/dev/null; then
+    printf "\r  [ \033[00;34m..\033[0m ] WSL detected — no systemd; start the daemon manually:\n"
+    printf "        sudo tailscaled > /dev/null 2>&1 &\n"
+    printf "        sudo tailscale up\n"
+else
+    printf "\r  [ \033[00;34m..\033[0m ] Tailscale installed. Connect with: sudo tailscale up\n"
+fi
 
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/master/scripts/install_dotfiles.sh)" "ubuntu"
