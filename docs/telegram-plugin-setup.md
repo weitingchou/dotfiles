@@ -12,9 +12,10 @@ can reply, react, and send files back.
 
 ## Concepts (who owns what)
 
-- **Bun** — runtime the plugin's MCP server runs on. Installed once per machine.
-  On macOS: `brew install bun` (shared via `/opt/homebrew`, like the rest of the
-  toolchain).
+- **Bun** — runtime the plugin's MCP server runs on. Installed once per machine
+  by the admin platform script (`scripts/install_macos.sh` runs `brew install
+  bun`), so it's shared via `/opt/homebrew` like the rest of the toolchain. Only
+  install it by hand (`brew install bun`) if you're on a box that predates this.
 - **BotFather** — Telegram's bot registrar. Creating a bot yields a **token**;
   whoever holds it controls the bot.
 - **Plugin + channel** — the plugin is installed per Claude Code user; the
@@ -24,7 +25,8 @@ can reply, react, and send files back.
 
 ## Prerequisites
 
-- [x] **Bun** — `brew install bun` (macOS). Verify: `bun --version`.
+- [x] **Bun** — installed by `scripts/install_macos.sh` (macOS); `brew install
+      bun` by hand only on older boxes. Verify: `bun --version`.
 
 ## Sequence
 

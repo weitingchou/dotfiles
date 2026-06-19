@@ -93,6 +93,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - Docker CLI + Compose + Colima (container runtime; run `colima start` per user)
 - Go toolchain (`go`) — language deps install per-user under `~/go`, no admin
 - Tailscale (mesh VPN, CLI formula; headless system daemon for remote SSH)
+- Bun (JS/TS runtime; runtime for the Telegram Claude Code plugin's MCP server)
 
 ### Both platforms (`install_dotfiles.sh`)
 - oh-my-zsh + plugins: `zsh-autosuggestions`, `zsh-syntax-highlighting`
@@ -119,6 +120,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 | gh | GitHub CLI |
 | Docker + Colima | Containers (macOS); `colima start` brings up a per-user daemon |
 | Tailscale | Mesh VPN for secure remote access (machine-level; `sudo tailscale up`) |
+| Bun | JS/TS runtime (macOS); runs the Telegram Claude Code plugin's MCP server |
 | Claude Code | AI coding assistant |
 
 ## After Installing

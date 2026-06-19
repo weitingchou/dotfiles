@@ -103,6 +103,9 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
   (including a non-admin sandbox user) runs its own daemon via `colima start` —
   no shared daemon, no sudo at runtime. The `docker`/`docker-compose` formulae
   are just the client + compose plugin talking to Colima's engine.
+- **Bun** (macOS): `brew install bun` in the admin platform script — a fast
+  JS/TS runtime. Installed shared (on `/opt/homebrew` PATH) because the Telegram
+  Claude Code plugin's MCP server runs on it. See `docs/telegram-plugin-setup.md`.
 
 ## Dotfile Conventions
 

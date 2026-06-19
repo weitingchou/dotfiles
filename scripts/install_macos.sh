@@ -170,6 +170,16 @@ fi
 echo "Tailscale installed. To connect this machine (admin, one-time):"
 echo "  sudo tailscaled install-system-daemon && sudo tailscale up"
 
+# Install Bun (fast JS/TS runtime + toolkit). The Telegram Claude Code plugin's
+# MCP server runs on Bun. Installed here in the admin path so it lands on the
+# shared /opt/homebrew PATH and every account (incl. a non-admin sandbox user)
+# gets it, matching the rest of the toolchain. See docs/telegram-plugin-setup.md.
+if command -v bun &>/dev/null; then
+    echo "Bun already installed, skipping."
+else
+    brew install bun
+fi
+
 # Remove outdated versions from the cellar.
 brew cleanup
 
