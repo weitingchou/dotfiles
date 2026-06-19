@@ -86,7 +86,8 @@ Other behavior:
 - Photos you send are saved to `~/.claude/channels/telegram/inbox/`.
 - **Live messages only** — the bot has no history/search; it sees nothing sent
   before it was online.
-- Multi-bot: point `TELEGRAM_STATE_DIR` at different directories per bot.
+- Multi-bot: point `TELEGRAM_STATE_DIR` at different directories per bot — see
+  **One bot per project** below for the full recipe.
 
 ## Terminal + Telegram on one session
 
@@ -116,6 +117,43 @@ process. The terminal you launched from and the bot are two windows onto the
   `allowlist` (your user ID only) before relying on it. For a session that's
   terminal-only with no Telegram reachability, just launch it **without**
   `--channels` — channels are per-session and opt-in at launch.
+
+## One bot per project
+
+To drive several projects from Telegram at once (e.g. `erdtree` and
+`trino-rust-worker` in parallel), **create one bot per project** — don't share a
+single bot across concurrent sessions.
+
+**Why it's required, not just tidy.** A Telegram bot token allows exactly one
+active `getUpdates` poller at a time. Launch two `claude --channels` sessions on
+the same token and the second gets `409 Conflict`; they steal each other's
+messages. The one-poller limit is at the token level, so group chats/topics
+don't work around it — concurrent sessions need separate tokens. (A *single*
+bot is fine if you only ever run one channel session at a time.)
+
+Per-project also reads better on the phone: each bot is its own chat thread, so
+DMing the "erdtree" chat unambiguously reaches the erdtree session, and each bot
+keeps its own allowlist and inbox.
+
+**Cost/limits:** bots are free (no charge to create or run); BotFather caps you
+at ~20 bots per account, which is plenty. Delete unused ones with `/deletebot`.
+
+**Convention** — keep setup mechanical:
+
+- Bot username: `<you>_<project>_bot` (e.g. `richard_erdtree_bot`)
+- State dir: `~/.claude/channels/telegram-<project>` (its own `.env` token,
+  `access.json` allowlist, and `inbox/`)
+- Launch, pointing the channel at that project's state dir:
+  ```bash
+  TELEGRAM_STATE_DIR=~/.claude/channels/telegram-<project> \
+    claude --channels plugin:telegram@claude-plugins-official
+  ```
+
+Configure each project's token by exporting `TELEGRAM_STATE_DIR` before
+`/telegram:configure` (it writes `<state-dir>/.env`), or write the `.env` by
+hand. The default state dir (`~/.claude/channels/telegram/`) is just the
+unnamed/first project — migrate it to a named dir for consistency once you add a
+second bot, or leave it as-is.
 
 ## Verify
 
