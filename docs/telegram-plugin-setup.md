@@ -88,6 +88,35 @@ Other behavior:
   before it was online.
 - Multi-bot: point `TELEGRAM_STATE_DIR` at different directories per bot.
 
+## Terminal + Telegram on one session
+
+Launching with `--channels` doesn't create a separate Telegram session — it adds
+Telegram as an extra **input/output surface** on the one running `claude`
+process. The terminal you launched from and the bot are two windows onto the
+*same* live session, with the same context. Consequences worth understanding:
+
+- **Same session, two surfaces.** Type in the terminal *or* DM the bot — both
+  drive the same Claude. An incoming DM is injected into the running session, so
+  it also appears in the terminal.
+- **The session lives in the process, not the phone.** It runs on whatever
+  machine you launched it on; Telegram is a remote control. If the process stops,
+  the bot has nothing to talk to. To bridge "out → home", keep the process alive
+  on an always-on box (run it in `tmux` on the Mac mini), drive it from Telegram
+  while out, then Tailscale-SSH home and `tmux attach` to the *same* live session
+  from your laptop. Don't `--continue`/`--resume` to switch surfaces — that
+  starts a new process from transcript, a different session from the live one.
+- **Terminal work is NOT mirrored to Telegram.** Claude only posts to the chat
+  when it calls its `reply` tool, which it does in response to *Telegram* input —
+  never automatically for terminal input. Work in the terminal with the phone
+  closed and the Telegram chat stays silent; nothing is broadcast there.
+- **But the context is shared.** Because it's one memory, anything from the
+  terminal conversation is reachable over Telegram *on demand* — DM the bot
+  "what were you working on?" and Claude can answer from the terminal context.
+  Not auto-readable, but contextually reachable, so lock the channel to
+  `allowlist` (your user ID only) before relying on it. For a session that's
+  terminal-only with no Telegram reachability, just launch it **without**
+  `--channels` — channels are per-session and opt-in at launch.
+
 ## Verify
 
 - `bun --version` → prints a version (prereq present).
