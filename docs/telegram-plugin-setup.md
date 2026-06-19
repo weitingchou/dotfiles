@@ -148,6 +148,10 @@ at ~20 bots per account, which is plenty. Delete unused ones with `/deletebot`.
   TELEGRAM_STATE_DIR=~/.claude/channels/telegram-<project> \
     claude --channels plugin:telegram@claude-plugins-official
   ```
+  Or use the **`claude-tg`** helper from `init/oh-my-zsh/custom/aliases.zsh`,
+  which wraps that line (and `mkdir`s the state dir): `claude-tg <project>`
+  (e.g. `claude-tg erdtree`). Extra args pass through, so
+  `claude-tg erdtree --dangerously-skip-permissions` works.
 
 Configure each project's token by exporting `TELEGRAM_STATE_DIR` before
 `/telegram:configure` (it writes `<state-dir>/.env`), or write the `.env` by

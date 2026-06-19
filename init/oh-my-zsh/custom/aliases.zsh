@@ -68,6 +68,28 @@ alias reload="exec $SHELL -l"
 # Claude with custom kubeconfig
 alias claude="KUBECONFIG=$HOME/.kube/claude-config CLAUDE_TELEMETRY=disabled claude"
 
+# Launch Claude with a per-project Telegram channel. A Telegram bot token allows
+# only one poller at a time, so concurrent projects each need their own bot and
+# state dir (token, allowlist, inbox). This isolates state by project name:
+#   claude-tg erdtree  ->  TELEGRAM_STATE_DIR=~/.claude/channels/telegram-erdtree
+# Extra args pass through (e.g. claude-tg erdtree --dangerously-skip-permissions).
+# Env mirrors the `claude` alias above (kubeconfig + telemetry) — keep in sync;
+# we set it explicitly and use `command claude` rather than relying on the alias
+# (zsh expands aliases at parse time, which is unreliable inside a function).
+function claude-tg() {
+    emulate -L zsh
+    if [[ -z "$1" ]]; then
+        print -u2 "usage: claude-tg <project> [extra claude args]   # e.g. claude-tg erdtree"
+        return 1
+    fi
+    local dir="$HOME/.claude/channels/telegram-$1"
+    shift
+    mkdir -p "$dir"
+    KUBECONFIG="$HOME/.kube/claude-config" CLAUDE_TELEMETRY=disabled \
+        TELEGRAM_STATE_DIR="$dir" \
+        command claude --channels plugin:telegram@claude-plugins-official "$@"
+}
+
 # ── Docker / Colima (macOS) ───────────────────────────────────────────────
 # macOS has no native container engine; Colima runs a per-user Linux VM. These
 # helpers give the account a one-command, idempotent start with a default dev
