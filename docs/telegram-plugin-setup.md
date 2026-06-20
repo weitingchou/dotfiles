@@ -153,11 +153,40 @@ at ~20 bots per account, which is plenty. Delete unused ones with `/deletebot`.
   (e.g. `claude-tg erdtree`). Extra args pass through, so
   `claude-tg erdtree --dangerously-skip-permissions` works.
 
-Configure each project's token by exporting `TELEGRAM_STATE_DIR` before
-`/telegram:configure` (it writes `<state-dir>/.env`), or write the `.env` by
-hand. The default state dir (`~/.claude/channels/telegram/`) is just the
-unnamed/first project — migrate it to a named dir for consistency once you add a
-second bot, or leave it as-is.
+**Heads-up — the slash-command skills only target the *default* dir.** The
+plugin *server* honors `TELEGRAM_STATE_DIR` (`server.ts`:
+`STATE_DIR = process.env.TELEGRAM_STATE_DIR ?? ~/.claude/channels/telegram`), so
+a session launched with it reads `.env`/`access.json` from the named dir. But the
+`/telegram:configure` and `/telegram:access` skills **hardcode**
+`~/.claude/channels/telegram/` and ignore the env var — run them against a
+non-default project and they edit the *wrong* file. So for any per-project dir,
+manage the two files **by hand**:
+
+- **Token** — write `<state-dir>/.env`:
+  ```bash
+  printf 'TELEGRAM_BOT_TOKEN=%s\n' '<token>' \
+    > ~/.claude/channels/telegram-<project>/.env
+  chmod 600 ~/.claude/channels/telegram-<project>/.env
+  ```
+- **Access** — write `<state-dir>/access.json`. Pre-seeding your own numeric ID
+  skips the pairing dance and locks the bot down from the first message:
+  ```json
+  {
+    "dmPolicy": "allowlist",
+    "allowFrom": ["<your-numeric-id>"],
+    "groups": {},
+    "pending": {}
+  }
+  ```
+  The server re-reads `access.json` on every inbound message, so edits apply with
+  no restart. Get your ID from [@userinfobot](https://t.me/userinfobot); the same
+  person's ID can be reused across projects. (A handy sanity check after writing
+  `.env`: `curl -s https://api.telegram.org/bot<token>/getMe` — `ok: true` plus
+  the bot's username confirms the token and that it's the right bot.)
+
+The default state dir (`~/.claude/channels/telegram/`) is the unnamed/first
+project, and *there* the slash commands work as written in the Sequence above.
+Migrate it to a named dir for consistency once you add a second bot, or leave it.
 
 ## Verify
 
