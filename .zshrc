@@ -9,6 +9,14 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="$HOME/.local/bin:$PATH"
 
+# Homebrew (macOS). The admin installs shared CLI tools under /opt/homebrew, but
+# macOS does not put that on PATH machine-wide (path_helper only reads /etc/paths
+# and /etc/paths.d/*, neither of which includes it). Load brew's env here so any
+# account that uses these dotfiles — including a non-admin sandbox user — gets the
+# shared toolchain (rtk, go, terraform, ...) on PATH. Guarded on the binary, so
+# it's a harmless no-op on Ubuntu and on machines without Homebrew.
+[ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Go tools installed via `go install` land in $GOPATH/bin (default ~/go/bin).
 export PATH="$HOME/go/bin:$PATH"
 

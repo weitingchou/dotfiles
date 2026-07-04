@@ -45,16 +45,15 @@ This runs: `install_user.sh` → `install_dotfiles.sh` with `DOTFILES_USER_ONLY=
 which takes a **sudo-free** path: only `$HOME`-scoped setup, no system packages.
 System packages are installed once by an admin (via the platform script) and
 shared. On macOS the installed binaries live under Homebrew's prefix
-(`/opt/homebrew`) and are readable by any account — but Homebrew is **not**
-auto-added to every account's `PATH`. The system `path_helper` (run from
-`/etc/zprofile`) only reads `/etc/paths` and `/etc/paths.d/*`, and neither
-includes `/opt/homebrew`; there is no machine-wide `brew shellenv`. The admin
-account gets the toolchain from an `eval "$(/opt/homebrew/bin/brew shellenv)"`
-line in its own `~/.zprofile`, but that file is **not tracked in this repo**, so
-a fresh non-admin account won't have `/opt/homebrew/bin` on `PATH` until that
-line is added to its shell config. Only `brew install`/`apt-get` require admin.
-`install_user.sh` preflights for the shared tools and stops early if an admin
-hasn't run the full install yet.
+(`/opt/homebrew`) and are readable by any account — but macOS does **not** add
+that prefix to every account's `PATH` on its own: the system `path_helper` (run
+from `/etc/zprofile`) only reads `/etc/paths` and `/etc/paths.d/*`, and neither
+includes `/opt/homebrew`, and there is no machine-wide `brew shellenv`. The
+synced `.zshrc` bridges this gap — it runs `eval "$(/opt/homebrew/bin/brew
+shellenv)"` (guarded on the binary existing), so any account that installs these
+dotfiles, including a non-admin sandbox user, gets the shared toolchain on
+`PATH`. Only `brew install`/`apt-get` require admin. `install_user.sh` preflights
+for the shared tools and stops early if an admin hasn't run the full install yet.
 
 `DOTFILES_USER_ONLY=1` makes `install_dotfiles.sh` skip its `sudo` callers: the
 `chsh`/`/etc/shells` shell change (replaced with a sudo-free self-`chsh`
