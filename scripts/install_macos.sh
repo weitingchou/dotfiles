@@ -180,6 +180,20 @@ else
     brew install bun
 fi
 
+# Install rtk (Rust Token Killer): a CLI proxy that filters and compresses
+# verbose command output before it reaches an AI agent's context window, cutting
+# token usage ~60-90% on common dev commands. It's a homebrew-core formula, so
+# the admin installs the binary once here under /opt/homebrew — just like
+# go/terraform/tailscale. Note that reaching it from a non-admin account still
+# requires /opt/homebrew/bin on that account's PATH (see CLAUDE.md). Each user
+# then wires rtk's Claude Code hook with `rtk init -g`, done per-user in
+# install_dotfiles.sh.
+if command -v rtk &>/dev/null; then
+    echo "rtk already installed, skipping."
+else
+    brew install rtk
+fi
+
 # Remove outdated versions from the cellar.
 brew cleanup
 

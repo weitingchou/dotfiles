@@ -305,6 +305,29 @@ fi
 info "${BLUE}Installing Claude Code CLI...${NORMAL}"
 curl -fsSL https://claude.ai/install.sh | bash
 
+# rtk (Rust Token Killer): a CLI proxy that filters/compresses verbose command
+# output before it reaches an AI agent's context, cutting token use ~60-90% on
+# common dev commands. On macOS the shared Homebrew formula (installed by the
+# admin platform script) already put `rtk` on PATH; elsewhere (Ubuntu, or a box
+# without it) fall back to the official per-user installer, which drops the
+# binary in ~/.local/bin (already on PATH via .zshrc) — no sudo needed.
+info "${BLUE}Installing rtk (LLM token reducer)...${NORMAL}"
+export PATH="$HOME/.local/bin:$PATH"  # so a freshly-installed rtk is visible below
+if command -v rtk >/dev/null 2>&1; then
+  success "rtk already installed, skipping binary install."
+else
+  curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/master/install.sh | sh
+fi
+# Per-user hook setup: registers rtk's PreToolUse auto-rewrite hook in the global
+# Claude Code config (~/.claude) and drops an RTK.md guide. Runs per account, so
+# every user (incl. a non-admin sandbox) gets the token-saving hook. The hook
+# only rewrites Bash tool calls (not Read/Grep/Glob). Non-fatal on failure.
+if command -v rtk >/dev/null 2>&1; then
+  rtk init -g || user "rtk init -g failed; run it manually to enable the Claude Code hook."
+else
+  user "rtk not found after install; skipping 'rtk init -g'."
+fi
+
 info "${BLUE}Installing Hermes Agent...${NORMAL}"
 # Hermes Agent (Nous Research) CLI. Only Git is required (present by now); the
 # installer pulls in its own Python/Node/ripgrep/ffmpeg. --skip-setup skips the

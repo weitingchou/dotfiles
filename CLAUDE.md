@@ -44,9 +44,15 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/weitingchou/dotfiles/mas
 This runs: `install_user.sh` → `install_dotfiles.sh` with `DOTFILES_USER_ONLY=1`,
 which takes a **sudo-free** path: only `$HOME`-scoped setup, no system packages.
 System packages are installed once by an admin (via the platform script) and
-shared. On macOS, the admin's Homebrew at `/opt/homebrew` is on every account's
-`PATH` via `/etc/paths.d/homebrew`, so a non-admin user gets the same CLI
-toolchain automatically — only `brew install`/`apt-get` are unavailable to them.
+shared. On macOS the installed binaries live under Homebrew's prefix
+(`/opt/homebrew`) and are readable by any account — but Homebrew is **not**
+auto-added to every account's `PATH`. The system `path_helper` (run from
+`/etc/zprofile`) only reads `/etc/paths` and `/etc/paths.d/*`, and neither
+includes `/opt/homebrew`; there is no machine-wide `brew shellenv`. The admin
+account gets the toolchain from an `eval "$(/opt/homebrew/bin/brew shellenv)"`
+line in its own `~/.zprofile`, but that file is **not tracked in this repo**, so
+a fresh non-admin account won't have `/opt/homebrew/bin` on `PATH` until that
+line is added to its shell config. Only `brew install`/`apt-get` require admin.
 `install_user.sh` preflights for the shared tools and stops early if an admin
 hasn't run the full install yet.
 
@@ -106,6 +112,19 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
 - **Bun** (macOS): `brew install bun` in the admin platform script — a fast
   JS/TS runtime. Installed shared (on `/opt/homebrew` PATH) because the Telegram
   Claude Code plugin's MCP server runs on it. See `docs/telegram-plugin-setup.md`.
+- **LLM token reducer**: `rtk` (Rust Token Killer,
+  https://github.com/rtk-ai/rtk). A CLI proxy that filters and compresses
+  verbose command output before it reaches an AI agent's context window (~60-90%
+  fewer tokens on common dev commands). The binary install is split by platform:
+  macOS uses the shared homebrew-core formula (`brew install rtk`) in the admin
+  script, so every account gets it on the shared PATH; on Ubuntu (no brew) the
+  per-user path in `install_dotfiles.sh` falls back to the official installer,
+  which drops the binary in `~/.local/bin` (on PATH via `.zshrc`, no sudo). The
+  hook wiring is always per-user: `install_dotfiles.sh` runs `rtk init -g` for
+  each account to register rtk's `PreToolUse` auto-rewrite hook in `~/.claude`
+  and drop an `RTK.md` guide. The hook only rewrites **Bash** tool calls — the
+  Read/Grep/Glob built-ins bypass it. Config lives at `~/.config/rtk/config.toml`
+  (macOS: `~/Library/Application Support/rtk/config.toml`).
 
 ## Dotfile Conventions
 
