@@ -159,8 +159,26 @@ plugin *server* honors `TELEGRAM_STATE_DIR` (`server.ts`:
 a session launched with it reads `.env`/`access.json` from the named dir. But the
 `/telegram:configure` and `/telegram:access` skills **hardcode**
 `~/.claude/channels/telegram/` and ignore the env var — run them against a
-non-default project and they edit the *wrong* file. So for any per-project dir,
-manage the two files **by hand**:
+non-default project and they edit the *wrong* file. In particular pairing can't
+complete for a named dir: the server watches `<state-dir>/approved/`, but
+`/telegram:access pair` drops its approval marker in the *default*
+`telegram/approved/`, so the two never meet. So for any per-project dir, seed the
+two config files yourself.
+
+- **One-shot helper (recommended)** — `claude-tg-init` from
+  `init/oh-my-zsh/custom/aliases.zsh` writes both files and verifies the token:
+  ```bash
+  claude-tg-init <project> <bot-token> <your-numeric-id>
+  # e.g. claude-tg-init erdtree 123456789:AAH... 987654321
+  ```
+  It creates the state dir, writes `.env` (chmod 600), writes an `access.json`
+  locked to your ID (`dmPolicy: allowlist`), and curls `getMe` to confirm the
+  token is live and the right bot. Get your numeric ID from
+  [@userinfobot](https://t.me/userinfobot); the same ID can be reused across
+  projects. Then launch with `claude-tg <project>`.
+
+If you'd rather do it by hand (or `claude-tg-init` isn't available), it's just
+these two files:
 
 - **Token** — write `<state-dir>/.env`:
   ```bash
@@ -179,10 +197,9 @@ manage the two files **by hand**:
   }
   ```
   The server re-reads `access.json` on every inbound message, so edits apply with
-  no restart. Get your ID from [@userinfobot](https://t.me/userinfobot); the same
-  person's ID can be reused across projects. (A handy sanity check after writing
-  `.env`: `curl -s https://api.telegram.org/bot<token>/getMe` — `ok: true` plus
-  the bot's username confirms the token and that it's the right bot.)
+  no restart. (Sanity check after writing `.env`:
+  `curl -s https://api.telegram.org/bot<token>/getMe` — `ok: true` plus the bot's
+  username confirms the token and that it's the right bot.)
 
 The default state dir (`~/.claude/channels/telegram/`) is the unnamed/first
 project, and *there* the slash commands work as written in the Sequence above.

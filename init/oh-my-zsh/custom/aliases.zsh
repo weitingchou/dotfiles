@@ -90,6 +90,46 @@ function claude-tg() {
         command claude --channels plugin:telegram@claude-plugins-official "$@"
 }
 
+# Bootstrap a per-project Telegram state dir for `claude-tg`. The /telegram:*
+# slash commands hardcode the DEFAULT dir (~/.claude/channels/telegram) and
+# ignore TELEGRAM_STATE_DIR, so a named project can't be configured/paired
+# through them — its .env and access.json must be written by hand. This does
+# that: seeds the token and an allowlist locked to your numeric ID (get it from
+# @userinfobot), so the bot is closed from the first message with no pairing
+# dance. Idempotent: overwrites both files with what you pass.
+#   claude-tg-init erdtree 123456789:AAH... 987654321
+# Then launch with: claude-tg erdtree
+function claude-tg-init() {
+    emulate -L zsh
+    if [[ -z "$1" || -z "$2" || -z "$3" ]]; then
+        print -u2 "usage: claude-tg-init <project> <bot-token> <your-numeric-id>"
+        print -u2 "  e.g. claude-tg-init erdtree 123456789:AAH... 987654321"
+        return 1
+    fi
+    local project="$1" token="$2" id="$3"
+    local dir="$HOME/.claude/channels/telegram-$project"
+    mkdir -p "$dir"
+    # Token is a credential — write it 0600 (umask-independent).
+    print -r -- "TELEGRAM_BOT_TOKEN=$token" > "$dir/.env"
+    chmod 600 "$dir/.env"
+    # Allowlist locked to the given ID; server re-reads this on every message.
+    jq -n --arg id "$id" \
+        '{dmPolicy:"allowlist", allowFrom:[$id], groups:{}, pending:{}}' \
+        > "$dir/access.json"
+    print -r -- "Wrote $dir/{.env,access.json}"
+    # Sanity-check the token against Telegram; confirms it's live and the right bot.
+    if command -v curl >/dev/null 2>&1; then
+        local me
+        me="$(curl -fsS "https://api.telegram.org/bot$token/getMe" 2>/dev/null)"
+        if command -v jq >/dev/null 2>&1 && print -r -- "$me" | jq -e '.ok' >/dev/null 2>&1; then
+            print -r -- "Token OK — bot: @$(print -r -- "$me" | jq -r '.result.username')"
+        else
+            print -u2 "Warning: getMe did not return ok — check the token."
+        fi
+    fi
+    print -r -- "Launch it with:  claude-tg $project"
+}
+
 # ── Docker / Colima (macOS) ───────────────────────────────────────────────
 # macOS has no native container engine; Colima runs a per-user Linux VM. These
 # helpers give the account a one-command, idempotent start with a default dev
