@@ -130,6 +130,51 @@ function claude-tg-init() {
     print -r -- "Launch it with:  claude-tg $project"
 }
 
+# List configured Telegram channels (per-project + the default one). For each
+# state dir under ~/.claude/channels it reports: bot id (the numeric prefix of
+# the token, an offline identifier — run `curl .../getMe` for the @username),
+# the access policy and allowlist size from access.json, and whether the poller
+# is live (the server writes bot.pid into the state dir on launch). All offline,
+# no network. Usage: claude-tg-ls
+function claude-tg-ls() {
+    emulate -L zsh
+    setopt local_options null_glob
+    local base="$HOME/.claude/channels"
+    local -a dirs
+    dirs=("$base"/telegram-*(N/) "$base"/telegram(N/))  # named dirs + default
+    if (( ${#dirs} == 0 )); then
+        print -- "No Telegram channels configured under $base."
+        return 0
+    fi
+    printf '%-16s %-13s %-10s %-6s %s\n' PROJECT BOT-ID POLICY ALLOW RUNNING
+    local d name line token botid policy allow pidf pid running
+    for d in $dirs; do
+        name=${d:t}
+        [[ $name == telegram ]] && name='(default)' || name=${name#telegram-}
+        botid='-'
+        if [[ -f $d/.env ]]; then
+            line=$(grep -m1 '^TELEGRAM_BOT_TOKEN=' "$d/.env" 2>/dev/null)
+            token=${line#TELEGRAM_BOT_TOKEN=}
+            [[ -n $token ]] && botid=${token%%:*}
+        fi
+        policy='-'; allow='-'
+        if [[ -f $d/access.json ]] && command -v jq >/dev/null 2>&1; then
+            policy=$(jq -r '.dmPolicy // "-"' "$d/access.json" 2>/dev/null)
+            allow=$(jq -r '(.allowFrom // []) | length' "$d/access.json" 2>/dev/null)
+        fi
+        running='no'; pidf="$d/bot.pid"
+        if [[ -f $pidf ]]; then
+            pid=$(<"$pidf")
+            if [[ -n $pid ]] && kill -0 $pid 2>/dev/null; then
+                running="yes (pid $pid)"
+            else
+                running='no (stale pid)'
+            fi
+        fi
+        printf '%-16s %-13s %-10s %-6s %s\n' "$name" "$botid" "$policy" "$allow" "$running"
+    done
+}
+
 # ── Docker / Colima (macOS) ───────────────────────────────────────────────
 # macOS has no native container engine; Colima runs a per-user Linux VM. These
 # helpers give the account a one-command, idempotent start with a default dev

@@ -152,6 +152,9 @@ at ~20 bots per account, which is plenty. Delete unused ones with `/deletebot`.
   which wraps that line (and `mkdir`s the state dir): `claude-tg <project>`
   (e.g. `claude-tg erdtree`). Extra args pass through, so
   `claude-tg erdtree --dangerously-skip-permissions` works.
+- See what's configured with **`claude-tg-ls`** (same file): lists every state
+  dir with its bot id, access policy, allowlist size, and whether the poller is
+  currently running (read from the server's `bot.pid`). Offline — no network.
 
 **Heads-up — the slash-command skills only target the *default* dir.** The
 plugin *server* honors `TELEGRAM_STATE_DIR` (`server.ts`:
