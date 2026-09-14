@@ -156,53 +156,46 @@ at ~20 bots per account, which is plenty. Delete unused ones with `/deletebot`.
   dir with its bot id, access policy, allowlist size, and whether the poller is
   currently running (read from the server's `bot.pid`). Offline — no network.
 
-**Heads-up — the slash-command skills only target the *default* dir.** The
-plugin *server* honors `TELEGRAM_STATE_DIR` (`server.ts`:
+**Setting up a project — use `claude-tg-init`.** It writes both state files and
+verifies the token, so a new bot is two commands total:
+
+```bash
+claude-tg-init <project>    # prompts for the BotFather token (not echoed)
+claude-tg <project>         # launch from the repo dir
+```
+
+`claude-tg-init` (in `init/oh-my-zsh/custom/aliases.zsh`):
+
+- writes `<state-dir>/.env` with the token at mode 600;
+- writes `<state-dir>/access.json` as `dmPolicy: allowlist` seeded with your
+  numeric Telegram user ID — which it **reuses from an existing project's
+  `access.json`**, prompting only if this is your first bot. Pre-seeding the ID
+  skips the pairing dance and locks the bot down from its first message;
+- verifies with `getMe`, printing the bot's `@username` so you can confirm the
+  token is live *and* is the bot you meant.
+
+It's re-runnable to rotate a token (it confirms before replacing an existing
+`.env`) and won't clobber an `access.json` you've since curated with extra users
+or groups. `claude-tg` refuses to launch a project with no token and points you
+at it. The server re-reads `access.json` on every inbound message, so hand-edits
+to the allowlist apply with no restart.
+
+**Why a helper and not the slash commands.** The plugin *server* honors
+`TELEGRAM_STATE_DIR` (`server.ts`:
 `STATE_DIR = process.env.TELEGRAM_STATE_DIR ?? ~/.claude/channels/telegram`), so
 a session launched with it reads `.env`/`access.json` from the named dir. But the
 `/telegram:configure` and `/telegram:access` skills **hardcode**
 `~/.claude/channels/telegram/` and ignore the env var — run them against a
-non-default project and they edit the *wrong* file. In particular pairing can't
-complete for a named dir: the server watches `<state-dir>/approved/`, but
-`/telegram:access pair` drops its approval marker in the *default*
-`telegram/approved/`, so the two never meet. So for any per-project dir, seed the
-two config files yourself.
+non-default project and they silently edit the *wrong* file. Pairing in
+particular can never complete for a named dir: the server watches
+`<state-dir>/approved/`, but `/telegram:access pair` drops its approval marker in
+the *default* `telegram/approved/`, so the two never meet. Seeding the allowlist
+up front — what `claude-tg-init` does — sidesteps pairing entirely.
 
-- **One-shot helper (recommended)** — `claude-tg-init` from
-  `init/oh-my-zsh/custom/aliases.zsh` writes both files and verifies the token:
-  ```bash
-  claude-tg-init <project> <bot-token> <your-numeric-id>
-  # e.g. claude-tg-init erdtree 123456789:AAH... 987654321
-  ```
-  It creates the state dir, writes `.env` (chmod 600), writes an `access.json`
-  locked to your ID (`dmPolicy: allowlist`), and curls `getMe` to confirm the
-  token is live and the right bot. Get your numeric ID from
-  [@userinfobot](https://t.me/userinfobot); the same ID can be reused across
-  projects. Then launch with `claude-tg <project>`.
-
-If you'd rather do it by hand (or `claude-tg-init` isn't available), it's just
-these two files:
-
-- **Token** — write `<state-dir>/.env`:
-  ```bash
-  printf 'TELEGRAM_BOT_TOKEN=%s\n' '<token>' \
-    > ~/.claude/channels/telegram-<project>/.env
-  chmod 600 ~/.claude/channels/telegram-<project>/.env
-  ```
-- **Access** — write `<state-dir>/access.json`. Pre-seeding your own numeric ID
-  skips the pairing dance and locks the bot down from the first message:
-  ```json
-  {
-    "dmPolicy": "allowlist",
-    "allowFrom": ["<your-numeric-id>"],
-    "groups": {},
-    "pending": {}
-  }
-  ```
-  The server re-reads `access.json` on every inbound message, so edits apply with
-  no restart. (Sanity check after writing `.env`:
-  `curl -s https://api.telegram.org/bot<token>/getMe` — `ok: true` plus the bot's
-  username confirms the token and that it's the right bot.)
+Without the helper (a shell that doesn't load these aliases), the equivalent is
+writing those same two files by hand: `TELEGRAM_BOT_TOKEN=<token>` into
+`<state-dir>/.env` at `chmod 600`, and an `access.json` of
+`{"dmPolicy":"allowlist","allowFrom":["<your-numeric-id>"],"groups":{},"pending":{}}`.
 
 The default state dir (`~/.claude/channels/telegram/`) is the unnamed/first
 project, and *there* the slash commands work as written in the Sequence above.

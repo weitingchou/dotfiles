@@ -82,52 +82,108 @@ function claude-tg() {
         print -u2 "usage: claude-tg <project> [extra claude args]   # e.g. claude-tg erdtree"
         return 1
     fi
-    local dir="$HOME/.claude/channels/telegram-$1"
+    local project="$1"
+    local dir="$HOME/.claude/channels/telegram-$project"
     shift
+    # The plugin reads the token from $TELEGRAM_BOT_TOKEN or <state-dir>/.env;
+    # without either it starts up and silently never polls. Fail loudly instead.
+    if [[ -z "$TELEGRAM_BOT_TOKEN" && ! -s "$dir/.env" ]]; then
+        print -u2 "claude-tg: no token for '$project'"
+        print -u2 "run: claude-tg-init $project"
+        return 1
+    fi
     mkdir -p "$dir"
     KUBECONFIG="$HOME/.kube/claude-config" CLAUDE_TELEMETRY=disabled \
         TELEGRAM_STATE_DIR="$dir" \
         command claude --channels plugin:telegram@claude-plugins-official "$@"
 }
 
-# Bootstrap a per-project Telegram state dir for `claude-tg`. The /telegram:*
-# slash commands hardcode the DEFAULT dir (~/.claude/channels/telegram) and
-# ignore TELEGRAM_STATE_DIR, so a named project can't be configured/paired
-# through them — its .env and access.json must be written by hand. This does
-# that: seeds the token and an allowlist locked to your numeric ID (get it from
-# @userinfobot), so the bot is closed from the first message with no pairing
-# dance. Idempotent: overwrites both files with what you pass.
-#   claude-tg-init erdtree 123456789:AAH... 987654321
-# Then launch with: claude-tg erdtree
+# Bootstrap a project's Telegram state dir so claude-tg can launch it: writes the
+# BotFather token to <state-dir>/.env (0600) and an allowlist-only access.json,
+# then verifies the token against Telegram's getMe. Run once per new bot.
+#   claude-tg-init erdtree            # prompts for the token (not echoed)
+#   claude-tg-init erdtree 123:AAH... # or pass it (lands in shell history)
+# The plugin's own /telegram:configure and /telegram:access skills can't do this:
+# they hardcode ~/.claude/channels/telegram/ and ignore TELEGRAM_STATE_DIR, so on
+# a per-project dir they'd edit the wrong file. See docs/telegram-plugin-setup.md.
 function claude-tg-init() {
     emulate -L zsh
-    if [[ -z "$1" || -z "$2" || -z "$3" ]]; then
-        print -u2 "usage: claude-tg-init <project> <bot-token> <your-numeric-id>"
-        print -u2 "  e.g. claude-tg-init erdtree 123456789:AAH... 987654321"
+    local project="$1" token="$2"
+    if [[ -z "$project" ]]; then
+        print -u2 "usage: claude-tg-init <project> [token]   # e.g. claude-tg-init erdtree"
         return 1
     fi
-    local project="$1" token="$2" id="$3"
     local dir="$HOME/.claude/channels/telegram-$project"
-    mkdir -p "$dir"
-    # Token is a credential — write it 0600 (umask-independent).
-    print -r -- "TELEGRAM_BOT_TOKEN=$token" > "$dir/.env"
-    chmod 600 "$dir/.env"
-    # Allowlist locked to the given ID; server re-reads this on every message.
-    jq -n --arg id "$id" \
-        '{dmPolicy:"allowlist", allowFrom:[$id], groups:{}, pending:{}}' \
-        > "$dir/access.json"
-    print -r -- "Wrote $dir/{.env,access.json}"
-    # Sanity-check the token against Telegram; confirms it's live and the right bot.
-    if command -v curl >/dev/null 2>&1; then
-        local me
-        me="$(curl -fsS "https://api.telegram.org/bot$token/getMe" 2>/dev/null)"
-        if command -v jq >/dev/null 2>&1 && print -r -- "$me" | jq -e '.ok' >/dev/null 2>&1; then
-            print -r -- "Token OK — bot: @$(print -r -- "$me" | jq -r '.result.username')"
-        else
-            print -u2 "Warning: getMe did not return ok — check the token."
+
+    if [[ -s "$dir/.env" ]]; then
+        local reply
+        read "reply?claude-tg-init: '$project' already has a token. Replace it? [y/N] "
+        [[ "$reply" == [yY]* ]] || { print "aborted"; return 1 }
+    fi
+
+    if [[ -z "$token" ]]; then
+        read -s "token?BotFather token for '$project': "
+        print
+    fi
+    # BotFather tokens are <bot-id>:<secret>; catch a truncated paste early rather
+    # than after a confusing 401 from getMe.
+    if [[ ! "$token" =~ '^[0-9]+:[A-Za-z0-9_-]{30,}$' ]]; then
+        print -u2 "claude-tg-init: that doesn't look like a bot token (expected 123456789:AA...)"
+        return 1
+    fi
+
+    # Reuse the Telegram user ID already allowlisted on another project — it's the
+    # same person every time, and it keeps a personal identifier out of this repo.
+    local id f json field parts
+    for f in $HOME/.claude/channels/telegram-*/access.json(N); do
+        [[ "$f" == "$dir/access.json" ]] && continue
+        json=$(tr -d ' \t\n' < "$f")
+        field=${json#*'"allowFrom":['}
+        field=${field%%']'*}
+        parts=(${(s:,:)field})
+        id=${parts[1]//\"/}
+        [[ -n "$id" ]] && break
+        id=
+    done
+    if [[ -z "$id" ]]; then
+        read "id?Your numeric Telegram user ID (from @userinfobot): "
+        if [[ ! "$id" =~ '^[0-9]+$' ]]; then
+            print -u2 "claude-tg-init: user ID must be numeric"
+            return 1
         fi
     fi
-    print -r -- "Launch it with:  claude-tg $project"
+
+    mkdir -p "$dir" || return 1
+    printf 'TELEGRAM_BOT_TOKEN=%s\n' "$token" > "$dir/.env" || return 1
+    chmod 600 "$dir/.env"
+    print "✓ $dir/.env (600)"
+
+    # Don't clobber an allowlist that's already been curated (extra users, groups).
+    if [[ -s "$dir/access.json" ]]; then
+        print "• access.json exists — left as is"
+    else
+        cat > "$dir/access.json" <<JSON
+{
+  "dmPolicy": "allowlist",
+  "allowFrom": ["$id"],
+  "groups": {},
+  "pending": {}
+}
+JSON
+        print "✓ $dir/access.json — allowlist, user $id"
+    fi
+
+    # Confirms both that the token is live and that it's the bot you meant.
+    local me=$(curl -fsS --max-time 10 "https://api.telegram.org/bot$token/getMe" 2>/dev/null)
+    if [[ "$me" == *'"ok":true'* ]]; then
+        local username=${${me#*'"username":"'}%%'"'*}
+        print "✓ getMe: @$username"
+    else
+        print -u2 "✗ getMe failed — token rejected or network down; .env written anyway"
+        return 1
+    fi
+
+    print "Now run: claude-tg $project"
 }
 
 # List configured Telegram channels (per-project + the default one). For each
