@@ -98,23 +98,31 @@ function claude-tg() {
         command claude --channels plugin:telegram@claude-plugins-official "$@"
 }
 
-# Bootstrap a project's Telegram state dir so claude-tg can launch it: writes the
-# BotFather token to <state-dir>/.env (0600) and an allowlist-only access.json,
-# then verifies the token against Telegram's getMe. Run once per new bot.
-#   claude-tg-init erdtree            # prompts for the token (not echoed)
-#   claude-tg-init erdtree 123:AAH... # or pass it (lands in shell history)
-# The plugin's own /telegram:configure and /telegram:access skills can't do this:
-# they hardcode ~/.claude/channels/telegram/ and ignore TELEGRAM_STATE_DIR, so on
-# a per-project dir they'd edit the wrong file. See docs/telegram-plugin-setup.md.
+# Bootstrap a per-project Telegram state dir for `claude-tg`. The /telegram:*
+# slash commands hardcode the DEFAULT dir (~/.claude/channels/telegram) and
+# ignore TELEGRAM_STATE_DIR, so a named project can't be configured through them
+# — and pairing can't complete either, since the server watches
+# <state-dir>/approved/ while /telegram:access pair writes to the default dir.
+# This seeds the two files itself: the token in .env (0600) and an allowlist
+# locked to your numeric ID, so the bot is closed from its first message with no
+# pairing dance. Token and ID are optional — omit either and it's prompted for
+# (token not echoed) or, for the ID, reused from a project you already set up.
+#   claude-tg-init erdtree 123456789:AAH... 987654321   # fully explicit
+#   claude-tg-init erdtree 123456789:AAH...             # ID reused
+#   claude-tg-init erdtree                              # both resolved for you
+# Then launch with: claude-tg erdtree.  See docs/telegram-plugin-setup.md.
 function claude-tg-init() {
     emulate -L zsh
-    local project="$1" token="$2"
+    local project="$1" token="$2" id="$3"
     if [[ -z "$project" ]]; then
-        print -u2 "usage: claude-tg-init <project> [token]   # e.g. claude-tg-init erdtree"
+        print -u2 "usage: claude-tg-init <project> [bot-token] [your-numeric-id]"
+        print -u2 "  e.g. claude-tg-init erdtree          # prompts for what it needs"
+        print -u2 "       claude-tg-init erdtree 123456789:AAH... 987654321"
         return 1
     fi
     local dir="$HOME/.claude/channels/telegram-$project"
 
+    # Rotating a token is a normal reason to re-run; clobbering one by typo isn't.
     if [[ -s "$dir/.env" ]]; then
         local reply
         read "reply?claude-tg-init: '$project' already has a token. Replace it? [y/N] "
@@ -125,26 +133,34 @@ function claude-tg-init() {
         read -s "token?BotFather token for '$project': "
         print
     fi
-    # BotFather tokens are <bot-id>:<secret>; catch a truncated paste early rather
-    # than after a confusing 401 from getMe.
+    # BotFather tokens are <bot-id>:<secret>; catch a truncated paste here rather
+    # than as a confusing 401 from getMe after the files are already written.
     if [[ ! "$token" =~ '^[0-9]+:[A-Za-z0-9_-]{30,}$' ]]; then
         print -u2 "claude-tg-init: that doesn't look like a bot token (expected 123456789:AA...)"
         return 1
     fi
 
-    # Reuse the Telegram user ID already allowlisted on another project — it's the
-    # same person every time, and it keeps a personal identifier out of this repo.
-    local id f json field parts
-    for f in $HOME/.claude/channels/telegram-*/access.json(N); do
-        [[ "$f" == "$dir/access.json" ]] && continue
-        json=$(tr -d ' \t\n' < "$f")
-        field=${json#*'"allowFrom":['}
-        field=${field%%']'*}
-        parts=(${(s:,:)field})
-        id=${parts[1]//\"/}
-        [[ -n "$id" ]] && break
-        id=
-    done
+    # An ID passed explicitly wins. Otherwise reuse the one already allowlisted on
+    # another project — it's the same person every time, and deriving it keeps a
+    # personal identifier out of this repo. Prompt only for the very first bot.
+    if [[ -n "$id" ]]; then
+        if [[ ! "$id" =~ '^[0-9]+$' ]]; then
+            print -u2 "claude-tg-init: user ID must be numeric (got '$id')"
+            return 1
+        fi
+    else
+        local f json field parts
+        for f in $HOME/.claude/channels/telegram-*/access.json(N); do
+            [[ "$f" == "$dir/access.json" ]] && continue
+            json=$(tr -d ' \t\n' < "$f")
+            field=${json#*'"allowFrom":['}
+            field=${field%%']'*}
+            parts=(${(s:,:)field})
+            id=${parts[1]//\"/}
+            [[ "$id" =~ '^[0-9]+$' ]] && break
+            id=
+        done
+    fi
     if [[ -z "$id" ]]; then
         read "id?Your numeric Telegram user ID (from @userinfobot): "
         if [[ ! "$id" =~ '^[0-9]+$' ]]; then
@@ -154,13 +170,17 @@ function claude-tg-init() {
     fi
 
     mkdir -p "$dir" || return 1
-    printf 'TELEGRAM_BOT_TOKEN=%s\n' "$token" > "$dir/.env" || return 1
+    print -r -- "TELEGRAM_BOT_TOKEN=$token" > "$dir/.env" || return 1
     chmod 600 "$dir/.env"
-    print "✓ $dir/.env (600)"
+    print -r -- "✓ $dir/.env (600)"
 
-    # Don't clobber an allowlist that's already been curated (extra users, groups).
+    # Don't clobber an allowlist that's since been curated (extra users, groups).
+    # Four fixed fields with a validated-numeric id — no jq needed to write it.
     if [[ -s "$dir/access.json" ]]; then
-        print "• access.json exists — left as is"
+        print -r -- "• $dir/access.json exists — left as is"
+        if [[ -n "$3" ]] && ! grep -q "\"$id\"" "$dir/access.json" 2>/dev/null; then
+            print -u2 "  note: $id was NOT added — edit the file to allowlist it"
+        fi
     else
         cat > "$dir/access.json" <<JSON
 {
@@ -170,20 +190,27 @@ function claude-tg-init() {
   "pending": {}
 }
 JSON
-        print "✓ $dir/access.json — allowlist, user $id"
+        print -r -- "✓ $dir/access.json — allowlist, user $id"
     fi
 
-    # Confirms both that the token is live and that it's the bot you meant.
-    local me=$(curl -fsS --max-time 10 "https://api.telegram.org/bot$token/getMe" 2>/dev/null)
+    # Confirms both that the token is live and that it's the bot you meant. jq
+    # parses it cleanly when present; the fallback keeps this working on a box
+    # without it (jq isn't in either install script, nor default on Ubuntu).
+    local me username
+    me="$(curl -fsS --max-time 10 "https://api.telegram.org/bot$token/getMe" 2>/dev/null)"
     if [[ "$me" == *'"ok":true'* ]]; then
-        local username=${${me#*'"username":"'}%%'"'*}
-        print "✓ getMe: @$username"
+        if command -v jq >/dev/null 2>&1; then
+            username=$(print -r -- "$me" | jq -r '.result.username // "?"')
+        else
+            username=${${me#*'"username":"'}%%'"'*}
+        fi
+        print -r -- "✓ getMe: @$username"
     else
         print -u2 "✗ getMe failed — token rejected or network down; .env written anyway"
         return 1
     fi
 
-    print "Now run: claude-tg $project"
+    print -r -- "Launch it with:  claude-tg $project"
 }
 
 # List configured Telegram channels (per-project + the default one). For each

@@ -164,21 +164,32 @@ claude-tg-init <project>    # prompts for the BotFather token (not echoed)
 claude-tg <project>         # launch from the repo dir
 ```
 
+Token and numeric ID are optional positional args — pass them for a scripted,
+non-interactive run, or omit either and it resolves it:
+
+```bash
+claude-tg-init erdtree 123456789:AAH... 987654321   # fully explicit
+claude-tg-init erdtree 123456789:AAH...             # ID reused
+claude-tg-init erdtree                              # both resolved for you
+```
+
 `claude-tg-init` (in `init/oh-my-zsh/custom/aliases.zsh`):
 
 - writes `<state-dir>/.env` with the token at mode 600;
 - writes `<state-dir>/access.json` as `dmPolicy: allowlist` seeded with your
-  numeric Telegram user ID — which it **reuses from an existing project's
-  `access.json`**, prompting only if this is your first bot. Pre-seeding the ID
-  skips the pairing dance and locks the bot down from its first message;
+  numeric Telegram user ID. An explicit third arg wins; otherwise it's **reused
+  from an existing project's `access.json`** — same person every time — and
+  prompted for only on your first bot. Seeding the ID is what lets a named
+  project skip pairing entirely (see below);
 - verifies with `getMe`, printing the bot's `@username` so you can confirm the
   token is live *and* is the bot you meant.
 
 It's re-runnable to rotate a token (it confirms before replacing an existing
 `.env`) and won't clobber an `access.json` you've since curated with extra users
-or groups. `claude-tg` refuses to launch a project with no token and points you
-at it. The server re-reads `access.json` on every inbound message, so hand-edits
-to the allowlist apply with no restart.
+or groups — if you pass an ID that the existing file doesn't list, it says so
+rather than silently dropping it. `claude-tg` refuses to launch a project with no
+token and points you at it. The server re-reads `access.json` on every inbound
+message, so hand-edits to the allowlist apply with no restart.
 
 **Why a helper and not the slash commands.** The plugin *server* honors
 `TELEGRAM_STATE_DIR` (`server.ts`:
