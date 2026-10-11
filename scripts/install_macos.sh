@@ -194,6 +194,19 @@ else
     brew install rtk
 fi
 
+# Install Codex (OpenAI's coding agent for the terminal). Unlike the tools above
+# it ships as a homebrew *cask*, not a formula — but it's a plain `bin/codex`
+# binary artifact (plus shell completions), so it still lands on the shared
+# /opt/homebrew PATH and every account picks it up, same as rtk/bun. Installed
+# here in the admin path for that reason; the Ubuntu equivalent is a per-user
+# `npm install -g @openai/codex` in install_dotfiles.sh.
+if command -v codex &>/dev/null; then
+    echo "Codex already installed, skipping."
+else
+    brew install --cask codex
+fi
+echo "Codex installed. Each account authenticates once (interactive): codex login"
+
 # Remove outdated versions from the cellar.
 brew cleanup
 

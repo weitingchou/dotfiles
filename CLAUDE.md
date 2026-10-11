@@ -124,6 +124,18 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
   and drop an `RTK.md` guide. The hook only rewrites **Bash** tool calls — the
   Read/Grep/Glob built-ins bypass it. Config lives at `~/.config/rtk/config.toml`
   (macOS: `~/Library/Application Support/rtk/config.toml`).
+- **Codex** (<https://github.com/openai/codex>): OpenAI's coding agent for the
+  terminal, alongside Claude Code. Install is split by platform, like rtk. macOS
+  uses the homebrew **cask** (`brew install --cask codex`) in the admin script —
+  it's a cask rather than a formula, but the artifact is a plain `bin/codex`
+  binary plus shell completions, so it lands on the shared `/opt/homebrew` PATH
+  and every account picks it up. Ubuntu has no brew, so the per-user path in
+  `install_dotfiles.sh` runs `npm install -g @openai/codex` under the
+  nvm-managed node — no sudo, same as pyright, with the same nvm caveat that
+  globals are per node version. Auth is **per-account and interactive**
+  (`codex login`, browser sign-in or API key), so it isn't scripted — both
+  installers just print the reminder, as with `tailscale up`. Codex keeps its
+  own state under `~/.codex/`; nothing in this repo is synced there.
 
 ## Dotfile Conventions
 

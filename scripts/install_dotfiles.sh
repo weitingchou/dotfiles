@@ -328,6 +328,24 @@ else
   user "rtk not found after install; skipping 'rtk init -g'."
 fi
 
+# Codex (OpenAI's coding agent for the terminal). On macOS the shared Homebrew
+# cask (installed by the admin platform script) already put `codex` on PATH; on
+# Ubuntu there's no brew, so install the official npm package instead. That lands
+# under the nvm-managed node as a per-user global — no sudo, same approach as
+# pyright above. Caveat inherited from nvm: globals are per node version, so an
+# `nvm install` of a new major means re-running this.
+info "${BLUE}Installing Codex (OpenAI coding agent)...${NORMAL}"
+if command -v codex >/dev/null 2>&1; then
+  success "codex already installed, skipping."
+else
+  npm install -g @openai/codex || user "codex install failed; run 'npm install -g @openai/codex' manually."
+fi
+# Auth is per-account and interactive (browser sign-in or API key), so it can't
+# be scripted — same situation as 'tailscale up'.
+if command -v codex >/dev/null 2>&1; then
+  user "Run 'codex login' once to authenticate Codex for this account."
+fi
+
 info "${BLUE}Installing Hermes Agent...${NORMAL}"
 # Hermes Agent (Nous Research) CLI. Only Git is required (present by now); the
 # installer pulls in its own Python/Node/ripgrep/ffmpeg. --skip-setup skips the
