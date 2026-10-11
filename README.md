@@ -94,6 +94,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - Go toolchain (`go`) — language deps install per-user under `~/go`, no admin
 - Tailscale (mesh VPN, CLI formula; headless system daemon for remote SSH)
 - Bun (JS/TS runtime; runtime for the Telegram Claude Code plugin's MCP server)
+- rtk (LLM token reducer; homebrew-core formula, shared on PATH)
 - Codex (OpenAI coding agent; homebrew cask, shared on PATH like the formulae)
 
 ### Both platforms (`install_dotfiles.sh`)
@@ -105,6 +106,8 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - Rust toolchain via rustup (per-user; `~/.rustup`, `~/.cargo`)
 - Go tools: `gopls` (LSP) + `golangci-lint` (per-user, `~/go/bin`; needs Go installed)
 - Claude Code CLI
+- rtk + its Claude Code hook via `rtk init -g` (binary on Ubuntu only, into
+  `~/.local/bin`; macOS gets it from brew above — the hook is wired per-user on both)
 - Codex CLI (Ubuntu only — npm global; macOS already has it from the cask above)
 
 ## Key Tools
@@ -125,6 +128,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 | Bun | JS/TS runtime (macOS); runs the Telegram Claude Code plugin's MCP server |
 | Claude Code | AI coding assistant |
 | Codex | OpenAI's terminal coding agent; `codex login` once per account |
+| rtk | Compresses verbose command output before it hits an agent's context (~60-90% fewer tokens) |
 
 ## After Installing
 
