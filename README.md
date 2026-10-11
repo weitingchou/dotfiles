@@ -109,6 +109,9 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 - rtk + its Claude Code hook via `rtk init -g` (binary on Ubuntu only, into
   `~/.local/bin`; macOS gets it from brew above — the hook is wired per-user on both)
 - Codex CLI (Ubuntu only — npm global; macOS already has it from the cask above)
+- Hermes Agent CLI (Nous Research; bundles its own Python/Node/ripgrep/ffmpeg,
+  installed `--skip-setup` so it runs unattended — run `hermes setup` afterwards
+  to configure an LLM provider)
 
 ## Key Tools
 
@@ -129,6 +132,7 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 | Claude Code | AI coding assistant |
 | Codex | OpenAI's terminal coding agent; `codex login` once per account |
 | rtk | Compresses verbose command output before it hits an agent's context (~60-90% fewer tokens) |
+| Hermes | Nous Research agent CLI; `hermes setup` once to configure an LLM provider |
 
 ## After Installing
 
