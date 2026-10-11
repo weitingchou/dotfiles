@@ -141,6 +141,31 @@ shared with every account, so a non-admin gets the identical CLI toolchain:
 3. Pyright LSP activates automatically for `.py` files
 4. Log out and back in (or open a new login shell) for zsh to become the default shell
 
+### One-time interactive setup
+
+The installers deliberately skip these: each needs a browser or a prompt, so
+scripting them would stall an otherwise unattended run. Skip any tool you don't
+use — nothing else depends on them.
+
+**Per account** — run as yourself, on each account that wants the tool:
+
+| Command | What it does |
+|---------|--------------|
+| `codex login` | Authenticates Codex (browser sign-in or API key) |
+| `hermes setup` | Configures an LLM provider for Hermes Agent |
+
+**Machine-level, once per box** — needs admin. Tailscale is one tunnel for the
+whole machine, shared by every account, so a single admin connects it and
+everyone can then reach the box by its tailnet name:
+
+```bash
+sudo tailscaled install-system-daemon   # macOS only: run at boot, no login session needed
+sudo tailscale up                       # sign in (opens a browser URL)
+```
+
+See `docs/remote-access-setup.md` for the full walkthrough, including the WSL
+caveat (no systemd, so the daemon needs starting by hand or systemd enabling).
+
 ## Add Custom Commands
 
 If `~/.extra` exists, it will be sourced along with the other files. Use it to add commands you don’t want to commit to a public repository (e.g. git credentials, private aliases).
