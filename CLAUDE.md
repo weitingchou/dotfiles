@@ -140,7 +140,9 @@ reachable) and auto-restart after a power outage. The prompt defaults to yes whe
 ## Dotfile Conventions
 
 - Files at repo root are synced to `$HOME` via `rsync` (see `install_dotfiles.sh`)
-- `.macos`, `bin/`, `init/`, `scripts/`, `docs/`, `bootstrap.sh` are excluded from the rsync
+- `.macos`, `bin/`, `init/`, `scripts/`, `docs/`, `bootstrap.sh`, `README.md`, `CLAUDE.md` are excluded from the rsync
+  (`CLAUDE.md` especially: a copy in `$HOME` is an ancestor-directory CLAUDE.md that Claude Code
+  loads into every session under `$HOME`, so it must never be synced)
 - `docs/` holds repo-only runbooks (e.g. `docs/remote-access-setup.md`), not synced to `$HOME`
 - `init/oh-my-zsh/custom/*` → `~/.oh-my-zsh/custom/`
 - `init/oh-my-zsh/themes/*` → `~/.oh-my-zsh/themes/`

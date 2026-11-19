@@ -176,6 +176,7 @@ rsync --exclude ".git/" \
   --exclude "docs/" \
   --exclude "bootstrap.sh" \
   --exclude "README.md" \
+  --exclude "CLAUDE.md" \
   --exclude "LICENSE-MIT.txt" \
   -avh --no-perms . $HOME;
 
